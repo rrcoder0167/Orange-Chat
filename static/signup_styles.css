@@ -22,7 +22,7 @@ form {
 }
 
 /* Style the form inputs */
-input[type="email"], input[type="password"], input[type="password2"] {
+input[type="email"], input[type="password"], input[type="text"]{
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;

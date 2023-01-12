@@ -14,6 +14,9 @@
             <input type="password" id="password" name="password" required>
             <br><br>
             <input type="submit" value="Login">
+            {% for message in get_flashed_messages() %}
+            <div class="alert-error">Error: {{ message }}</div>
+            {% endfor %}
         </form>
     </body>
 </html>

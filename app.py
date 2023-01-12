@@ -38,8 +38,7 @@ def authenticate(email, password):
 
 
 app = Flask(__name__)
-app.config[
-    'SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/riddhiman.rana/Documents/ChitChat Application/instance/users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.secret_key = '019vcxpr!rp5lz13'
 db.init_app(app)
 with app.app_context():
@@ -112,4 +111,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8080)
+    app.run(debug=True)
