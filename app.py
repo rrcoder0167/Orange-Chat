@@ -11,11 +11,14 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
-    
+    username = db.Column(db.String(100))
+    name = db.Column(db.String(100))
     # methods
-    def __init__(self, email, password):
+    def __init__(self, email, password, username, name):
         self.email = email
         self.password = generate_password_hash(password)
+        self.username = username
+        self.name = name
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -74,16 +77,22 @@ def login():
 def signup():
     if request.method == "POST":
         email = request.form["email"]
+        name = request.form["name"]
+        username = request.form["username"]
         password = request.form["password"]
         password2 = request.form["password2"]
         if password != password2:
             flash("Passwords do not match.")
             return render_template("signup.html")
-        existing_user = User.query.filter_by(email=email).first()
-        if existing_user:
+        existing_user_email = User.query.filter_by(email=email).first()
+        existing_user_username = User.query.filter_by(username=username).first()
+        if existing_user_email:
             flash("A user with that email address already exists.")
             return render_template("signup.html")
-        user = User(email, password)
+        elif existing_user_username:
+            flash("A user with that username already exists.")
+            return render_template("signup.html")
+        user = User(email, password, username, name)
         db.session.add(user)
         db.session.commit()
         flash("you are now signed up!")
