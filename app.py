@@ -79,6 +79,8 @@ def signup():
         email = request.form["email"]
         name = request.form["name"]
         username = request.form["username"]
+        if name == "":
+            name = username
         password = request.form["password"]
         password2 = request.form["password2"]
         if password != password2:
