@@ -5,20 +5,27 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-class User(db.Model):
+
+class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
-    #methods 
+    
+    # methods
     def __init__(self, email, password):
         self.email = email
         self.password = generate_password_hash(password)
-    def check_password(self,password):
-        return check_password_hash(self.password,password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+    def get_id(self):
+        return self.id
     @property
     def is_active(self):
         return True
+
 
 def authenticate(email, password):
     user = User.query.filter_by(email=email).first()
@@ -27,9 +34,9 @@ def authenticate(email, password):
     return None
 
 
-
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/riddhiman.rana/Documents/ChitChat Application/instance/users.db'
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/riddhiman.rana/Documents/ChitChat Application/instance/users.db'
 app.secret_key = '019vcxpr!rp5lz13'
 db.init_app(app)
 with app.app_context():
@@ -37,13 +44,16 @@ with app.app_context():
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get_or_404(user_id)
+
 
 @app.route("/")
 def home():
     return render_template("home.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -58,6 +68,7 @@ def login():
         else:
             flash("Invalid email or password.")
     return render_template("login.html")
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
@@ -79,6 +90,14 @@ def signup():
         return render_template("home.html")
     else:
         return render_template("signup.html")
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("Logged out successfully.")
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
