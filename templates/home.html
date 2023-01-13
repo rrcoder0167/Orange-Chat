@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Chat Application</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home_styles.css') }}">
+        <title>ChitChat Application</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+        <script src="{{url_for('static', filename='script.js')}}"></script>
     </head>
     <body>
-        <h1>Welcome to the Chat Application</h1>
+        <header>
+            {% include 'header.html' %}
+            {% block content %}{% endblock %}
+        </header>
+        <h1>Welcome to ChitChat!!
+        </h1>
         {% if current_user.is_authenticated %}
         <p>You are logged in as {{current_user.name}}</p>
         <p>
@@ -14,7 +21,7 @@
         {% else %}
         <p>You are not logged in.</p>
         <p>
-            <a href="{{ url_for('login') }}">Login</a> or 
+            <a href="{{ url_for('login') }}">Login</a>
             <a href="{{ url_for('signup') }}">Signup</a>
         </p>
         {% endif %}

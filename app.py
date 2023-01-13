@@ -34,7 +34,8 @@ def authenticate(email, password):
     user = User.query.filter_by(email=email).first()
     if user and user.check_password(password):
         return user
-    return None
+    else:
+        return None
 
 
 app = Flask(__name__)
@@ -65,10 +66,10 @@ def login():
         user = authenticate(email, password)
         if user:
             login_user(user)
-            flash("Logged in successfully.")
+            flash("Logged in successfully.", category="success")
             return redirect(url_for("home"))
         else:
-            flash("Invalid email or password.")
+            flash("Invalid email or password.", category="error_high")
     return render_template("login.html")
 
 
@@ -88,10 +89,10 @@ def signup():
         existing_user_email = User.query.filter_by(email=email).first()
         existing_user_username = User.query.filter_by(username=username).first()
         if existing_user_email:
-            flash("A user with that email address already exists.")
+            flash("A user with that email address already exists.", category="error_medium")
             return render_template("signup.html")
         elif existing_user_username:
-            flash("A user with that username already exists.")
+            flash("A user with that username already exists.", category="error_medium")
             return render_template("signup.html")
         user = User(email, password, username, name)
         db.session.add(user)
@@ -105,8 +106,9 @@ def signup():
 @app.route("/logout")
 @login_required
 def logout():
-    logout_user()
-    flash("Logged out successfully.")
+    if current_user.is_authenticated:
+        logout_user()
+        flash("Logged out successfully.", category="success")
     return redirect(url_for("home"))
 
 
