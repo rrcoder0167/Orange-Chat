@@ -66,7 +66,7 @@ def login():
         user = authenticate(email, password)
         if user:
             login_user(user)
-            flash("Logged in successfully.", category="success")
+            flash("Welcome Back!! Logged in successfully.", category="success")
             return redirect(url_for("home"))
         else:
             flash("Invalid email or password.", category="error_high")

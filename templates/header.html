@@ -1,6 +1,6 @@
 {% for category, message in get_flashed_messages(with_categories=true) %}
     {% if category == 'success' %}
-        <div class="alert-success alert-message">Welcome back! {{ message }}</div>
+        <div class="alert-success alert-message">{{ message }}</div>
     {% elif category == 'error_medium' %}
         <div class="alert-error_medium alert-message">{{ message }}</div>
     {% elif category == 'error_high' %}
