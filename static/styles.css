@@ -1,5 +1,6 @@
 /* Add a background color to the body */
 body {
+    margin-top: 60px;
     background-color: #f2f2f2;
 }
 
@@ -86,4 +87,89 @@ input[type="submit"]:hover {
     border: 3px solid darkred;
     background-color: red;
     color: white
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffa500;
+}
+
+.nav-left {
+    display: none; /* initially hide the left menu */
+}
+
+.nav-left.show {
+    display: flex;
+}
+
+.nav-menu-button {
+    display: inline-block;
+    font-size: 1.5rem;
+    color: white;
+    cursor: crr;
+}
+
+.nav-menu-item {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+}
+
+.nav-center {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.nav-logo img {
+    margin-right: 10px;
+    width: 50px;
+    height: 50px;
+}
+
+.nav-right {
+    display: flex;
+    justify-content: flex-end;
+    text-align: right;
+    right: 0;
+}
+
+.nav-button {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+.nav-button:hover {
+    background-color: white;
+    color: #ffa500;
+}
+
+/* Show the left menu when the menu button is clicked */
+.nav-menu-button:active + .nav-left {
+    display: block;
 }

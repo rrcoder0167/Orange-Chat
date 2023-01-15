@@ -1,3 +1,4 @@
+
 $(document).ready(function(){
     $(".alert-message").css("display", "block");  // Show the elements when the page loads
     setTimeout(function() {

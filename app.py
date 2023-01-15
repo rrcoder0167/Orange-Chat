@@ -111,6 +111,10 @@ def logout():
         flash("Logged out successfully.", category="success")
     return redirect(url_for("home"))
 
+@app.route('/about')
+def about():
+    return 'orange chat is like cwazy at life bwo'
+
 
 if __name__ == "__main__":
     app.run(debug=True)
