@@ -69,4 +69,15 @@ $(document).ready(function() {
       $(".close-button").click(function() {
         $(this).parent().hide();
       });
+      $(".cancel-friend-request-button").click(function() {
+        var friendRequestId = $(this).data("friend-request-id");
+        $.post("/cancel_friend_request", {friend_request_id: friendRequestId}, function(data) {
+            if (data.message == "cancel_friend_request-success") {
+              // Remove the friend request from the list on the page
+              $("#friend-request-" + friendRequestId).remove();
+            } else {
+              console.error("Error cancelling friend request: " + data.message);
+            }
+          });
+      });
 });

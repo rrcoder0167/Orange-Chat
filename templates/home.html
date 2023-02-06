@@ -48,6 +48,14 @@
             <li>{{friend.friend.username}}</li>
             {% endfor %}
         </ul>
+        <h2>Pending Friend Requests</h2>
+        <ul id="pending-friend-requests">
+        {% for friend_request in pending_friend_requests %}
+        <li id="friend-request-{{friend_request.id}}">{{friend_request.recipient.username}}
+            <button class="cancel-friend-request-button" data-friend-request-id="{{friend_request.id}}">Cancel</button>
+        </li>
+        {% endfor %}
+        </ul>
 
         {% else %}
 

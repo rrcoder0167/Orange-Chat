@@ -77,7 +77,8 @@ def favicon():
 def home():
     if current_user.is_authenticated:
         friend_requests = FriendRequest.query.filter_by(receiver_id=current_user.id).all()
-        return render_template("home.html", friend_requests=friend_requests)
+        pending_friend_requests = FriendRequest.query.filter_by(sender_id=current_user.id, status='pending').all()
+        return render_template("home.html", friend_requests=friend_requests, pending_friend_requests=pending_friend_requests)
     else:
         return render_template("home.html")
 
@@ -188,6 +189,19 @@ def send_friend_request():
     else:
         flash("A fatal system error has ocurred. Please try again later.", category="error_high")
 
+@app.route("/cancel_friend_request", methods=["POST"])
+@login_required
+def cancel_friend_request():
+    if request.method == "POST":
+        friend_request_id = request.form["friend_request_id"]
+        friend_request = FriendRequest.query.get(friend_request_id)
+        if friend_request is None:
+            return jsonify({"message": "friend_request_not_found-error"}), 404
+        db.session.delete(friend_request)
+        db.session.commit()
+        return jsonify({"message": "cancel_friend_request-success"})
+    else:
+        return jsonify({"message": "bad_request-error"}), 400
 
 
 @app.route("/accept_friend_request", methods=["POST"])
