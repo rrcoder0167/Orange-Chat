@@ -19,7 +19,7 @@ $(document).ready(function() {
                     $("#send-friend_req-button").click(function() {
                         $.post("/send_friend_request", {recipient_email: $("#friend-email").val()}, function(data) {
                           console.log(data);
-                          $(".sticky-alert-success").text("Success! You sent them a friend request. You'll be accepted :) or rejected ;( in no time").show();
+                          $(".sticky-alert-success .sticky-alert-message").text("Success! You sent them a friend request. You'll be accepted :) or rejected ;( in no time").parent().show();
                         }).fail(function(jqXHR, textStatus, errorThrown) {
                           if (jqXHR.status == 400) {
                             console.log("Bad request, sent existing friend request. [ERROR 400]");
