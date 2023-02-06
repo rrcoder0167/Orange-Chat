@@ -9,7 +9,9 @@ yeetsquad
 r58playz
 ...and more
 
-What I'm working on now: html layout of webpage
+What I'm working on now: Accept/ Decline Friend Request Functionality
+
+So I finished the send friend request functionality and now I'm onto accepting or declining friend requests. Declining is easy but accepting is hard...
 
 Thanks
 
