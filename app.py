@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, jsonify, render_template, request, flash, redirect, url_for
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -37,6 +37,23 @@ def authenticate(email, password):
     else:
         return None
 
+class Friends(db.Model):
+    __tablename__ = 'friends'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    friend_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    friend = db.relationship('User', foreign_keys=[friend_id])
+
+class FriendRequest(db.Model):
+    __tablename__ = 'friend_requests'
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    status = db.Column(db.String(20), default='pending')
+    sender = db.relationship('User', foreign_keys=[sender_id])
+    receiver = db.relationship('User', foreign_keys=[receiver_id])
+
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
@@ -52,10 +69,17 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get_or_404(user_id)
 
+@app.route('/favicon.ico')
+def favicon():
+    return url_for('static', filename='images/favicon.ico')
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    if current_user.is_authenticated:
+        friend_requests = FriendRequest.query.filter_by(receiver_id=current_user.id).all()
+        return render_template("home.html", friend_requests=friend_requests)
+    else:
+        return render_template("home.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -97,7 +121,7 @@ def signup():
         user = User(email, password, username, name)
         db.session.add(user)
         db.session.commit()
-        flash("you are now signed up!")
+        flash("You are now signed up!")
         return render_template("home.html")
     else:
         return render_template("signup.html")
@@ -114,6 +138,85 @@ def logout():
 @app.route('/about')
 def about():
     return 'orange chat is like cwazy at life bwo'
+
+@app.route('/testing')
+def testing():
+    return render_template('testing.html')
+
+@app.route("/search_friends", methods=["GET", "POST"])
+@login_required
+def search_friends():
+    if request.method == "POST":
+        search_query = request.form["search_query"]
+        user = User.query.filter_by(email=search_query).first()
+        if user == current_user:
+            message = f"self_friend_req-error"
+            response = {"success": False, "message": message}
+            return jsonify(response)
+        elif user:
+            message = f"We found user {user.username}!"
+            response = {"success": True, "message": message}
+            return jsonify(response)
+        else:
+            message = f"user_exists_none-error"
+            response = {"success": False, "message": message}
+            return jsonify(response)
+    else:
+        return render_template("home.html")
+
+@app.route("/send_friend_request", methods=["POST"])
+@login_required
+def send_friend_request():
+    if request.method == "POST":
+        recipient_email = request.form["recipient_email"]
+        recipient = User.query.filter_by(email=recipient_email).first()
+        if recipient is None:
+            return jsonify({"message": "user_exists_none-error"}), 401
+        sender = current_user
+
+        existing_request_to_sender = FriendRequest.query.filter_by(sender_id=recipient.id, receiver_id=sender.id).first()
+        if existing_request_to_sender is not None:
+            return jsonify({"message": "friend_req_alr_received-error"}), 500
+        
+        existing_friend_request = FriendRequest.query.filter_by(sender_id=sender.id, receiver_id=recipient.id).first()
+        if existing_friend_request is not None:
+            return jsonify({"message": "friend_req_alr_sent-error"}), 400
+        friend_request = FriendRequest(sender_id=sender.id, receiver_id=recipient.id)
+        db.session.add(friend_request)
+        db.session.commit()
+        return jsonify({"message": "send_friend_req-success"})
+    else:
+        flash("A fatal system error has ocurred. Please try again later.", category="error_high")
+
+
+
+@app.route("/accept_friend_request", methods=["POST"])
+@login_required
+def accept_friend_request():
+    data = request.get_json()
+    friend_request_id = data["friend_request_id"]
+    friend_request = FriendRequest.query.get(friend_request_id)
+    if friend_request is None:
+        return jsonify({"message": "Friend request not found"}), 400
+    friend_request.status = 'accepted'
+    friend1 = Friends(user_id=friend_request.sender_id, friend_id=friend_request.receiver_id)
+    friend2 = Friends(user_id=friend_request.receiver_id, friend_id=friend_request.sender_id)
+    db.session.add(friend1)
+    db.session.add(friend2)
+    db.session.commit()
+    return jsonify({"message": "Friend request accepted"})
+
+@app.route("/reject_friend_request", methods=["POST"])
+@login_required
+def reject_friend_request():
+    data = request.get_json()
+    friend_request_id = data["friend_request_id"]
+    friend_request = FriendRequest.query.get(friend_request_id)
+    if friend_request is None:
+        return jsonify({"message": "Friend request not found"}), 400
+    db.session.delete(friend_request)
+    db.session.commit()
+    return jsonify({"message": "Friend request rejected"})
 
 
 if __name__ == "__main__":

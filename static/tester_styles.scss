@@ -1,0 +1,81 @@
+$color-bluish: #06c8d9;
+
+:root {
+  font-size: 16px;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+html,
+body,
+.row {
+  height: 100%;
+  text-align: center;
+}
+
+.pen-info {
+  color: #d4d3d4;
+  font-size: 80%;
+  text-transform: uppercase;
+}
+
+.c-button {
+  color: #000;
+  font-weight: 700;
+  font-size: 1em;
+  text-decoration: none;
+  padding: .7em 1.8em;
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.c-button--gooey {
+  color: $color-bluish;
+  font-size: 1.3em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border: 4px solid $color-bluish;
+  border-radius: 0;  
+  padding: 1.2em 3.4em;
+  position: relative;
+  transition: all 700ms ease;
+  .c-button__blobs {
+    height: 100%;
+    filter: url(#goo);
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: -3px;
+    right: -1px;
+    z-index: -1;
+    div {
+      background-color: $color-bluish;
+      width: 34%;
+      height: 100%;
+      border-radius: 100%;
+      position: absolute;
+      transform: scale(1.4) translateY(125%) translateZ(0);
+      transition: all 700ms ease;
+      &:nth-child(1) {
+        left: -5%;
+      }
+      &:nth-child(2) {
+        left: 30%;
+        transition-delay: 60ms;
+      }
+      &:nth-child(3) {
+        left: 66%;
+        transition-delay: 25ms;
+      }
+    }
+  }
+  &:hover {
+    color: #fff;
+    .c-button__blobs {
+      div {
+        transform: scale(1.4) translateY(0) translateZ(0);
+      }
+    }
+  }
+}
