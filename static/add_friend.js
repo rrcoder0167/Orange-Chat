@@ -46,25 +46,18 @@ $(document).ready(function() {
     });
     $('.accept-friend-request-button').click(function() {
         let friendRequestId = $(this).data('user-id');
-        $.ajax({
-          url: "/accept_friend_request/" + friendRequestId,
-          type: "POST",
-          success: function(result) {
-            console.log(result);
-            // Update the UI to reflect that the friend request has been accepted
-          }
-        });
+        $.post("/reject_friend_request/")
       });
-      $(".reject-friend-request-button").click(function() {
-        var friendRequestId = $(this).data("user-id");
-        $.post("/reject_friend_request/" + friendRequestId, function(data) {
-          if (data.message === "Friend request rejected.") {
-            alert(data.message);
-            location.reload();
-          } else {
-            alert(data.message);
-          }
-        });
+      $(".decline-friend-req-btn").click(function() {
+        var friendRequestId = $(this).data("friend-request-id");
+        $.post("/decline_friend_request", {friend_request_id: friendRequestId}, function(data) {
+            if (data.message == "decline_friend_request-success") {
+              // Remove the friend request from the list on the page
+              $("#friend-request-" + friendRequestId).remove();
+            } else {
+              console.error("Error cancelling friend request: " + data.message);
+            }
+          });
       });
       $(".close-button").click(function() {
         $(this).parent().hide();

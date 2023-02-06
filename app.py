@@ -220,17 +220,21 @@ def accept_friend_request():
     db.session.commit()
     return jsonify({"message": "Friend request accepted"})
 
-@app.route("/reject_friend_request", methods=["POST"])
+@app.route("/decline_friend_request", methods=["POST"])
 @login_required
-def reject_friend_request():
-    data = request.get_json()
-    friend_request_id = data["friend_request_id"]
-    friend_request = FriendRequest.query.get(friend_request_id)
-    if friend_request is None:
-        return jsonify({"message": "Friend request not found"}), 400
-    db.session.delete(friend_request)
-    db.session.commit()
-    return jsonify({"message": "Friend request rejected"})
+def decline_friend_request():
+    if request.method == "POST":
+        friend_request_id = request.form["friend_request_id"]
+        friend_request = FriendRequest.query.get(friend_request_id)
+        if friend_request is None:
+            return jsonify({"message": "friend_request_not_found-error"}), 404
+        db.session.delete(friend_request)
+        db.session.commit()
+        flash("Friend Request Declined.", category="success")
+        return jsonify({"message": "decline_friend_request-success"})
+    else:
+        flash("Sorry, there was an error, please try again later.", category="error_high")
+        return jsonify({"message": "bad_request-error"}), 400
 
 
 if __name__ == "__main__":

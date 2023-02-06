@@ -38,8 +38,8 @@
         <ul id="friend-requests">
             {% for friend_request in friend_requests %}
             <li>{{friend_request.sender.username}}
-                <button class="accept-friend-request-button" data-friend-request-id="{{friend_request.id}}">Accept</button>
-                <button class="decline-friend-request-button" data-friend-request-id="{{friend_request.id}}">Decline</button>
+                <button class="accept-friend-req-btn" data-friend-request-id="{{friend_request.id}}">Accept</button>
+                <button class="decline-friend-req-btn" data-friend-request-id="{{friend_request.id}}">Decline</button>
             </li>
             {% endfor %}
         </ul>
@@ -52,8 +52,8 @@
         <h2>Pending Friend Requests</h2>
         <ul id="pending-friend-requests">
         {% for friend_request in pending_friend_requests %}
-        <li id="friend-request-{{friend_request.id}}">{{friend_request.username}}
-            <button class="cancel-friend-request-button" data-friend-request-id="{{friend_request.id}}">Cancel</button>
+        <li id="friend-request-{{friend_request.id}}">{{friend_request.receiver.username}}
+            <button class="cancel-friend-req-btn data-friend-request-id="{{friend_request.id}}">Cancel</button>
         </li>
         {% endfor %}
         </ul>
