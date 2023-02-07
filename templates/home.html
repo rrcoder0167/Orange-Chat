@@ -44,16 +44,17 @@
             {% endfor %}
         </ul>
         <h2>Friends</h2>
-        <ul id="friends">
-            {% for friend in friends %}
-            <li>{{friend.friend.username}}</li>
+        <ul id="friends-list">
+            {% for friendship in friendships %}
+                <li class="friend-item">{{ friendship.friend.username }}</li>
             {% endfor %}
         </ul>
+
         <h2>Pending Friend Requests</h2>
         <ul id="pending-friend-requests">
         {% for friend_request in pending_friend_requests %}
         <li id="friend-request-{{friend_request.id}}">{{friend_request.receiver.username}}
-            <button class="cancel-friend-req-btn data-friend-request-id="{{friend_request.id}}">Cancel</button>
+            <button class="cancel-friend-req-btn" data-friend-request-id="{{friend_request.id}}">Cancel</button>
         </li>
         {% endfor %}
         </ul>

@@ -17,9 +17,14 @@ $(document).ready(function() {
                     $("#search-result").text(data.message).removeClass().addClass("success");
                     $("#search-result").append("<button id='send-friend_req-button'>Send Friend Request</button>");
                     $("#send-friend_req-button").click(function() {
-                        $.post("/send_friend_request", {recipient_email: $("#friend-email").val()}, function(data) {
+                        $.post("/send_friend_request", {receiver_email: $("#friend-email").val()}, function(data) {
                           console.log(data);
                           $(".sticky-alert-success .sticky-alert-message").text("Success! You sent them a friend request. You'll be accepted :) or rejected ;( in no time").parent().show();
+                          $("#pending-friend-requests").append(`
+                              <li id="friend-request-${data.id}">${data.username}
+                                  <button class="cancel-friend-req-btn" data-friend-request-id="${data.id}">Cancel</button>
+                              </li>
+                          `);
                         }).fail(function(jqXHR, textStatus, errorThrown) {
                           if (jqXHR.status == 400) {
                             console.log("Bad request, sent existing friend request. [ERROR 400]");
@@ -44,12 +49,20 @@ $(document).ready(function() {
             });
         }
     });
-    $('.accept-friend-request-button').click(function() {
-        let friendRequestId = $(this).data('user-id');
-        $.post("/reject_friend_request/")
+    $(".accept-friend-req-btn").click(function() {
+        var friendRequestId = $(this).data("friend-request-id");
+        $.post("/accept_friend_request", {friend_request_id: friendRequestId}, function(data) {
+            if (data.message == "accept_friend_request-success") {
+              // Remove the friend request from the list on the page
+              $("#friend-request-" + friendRequestId).remove();
+            } else {
+              console.error("Error accepting friend request: " + data.message);
+            }
+          });
       });
       $(".decline-friend-req-btn").click(function() {
         var friendRequestId = $(this).data("friend-request-id");
+        console.log(friendRequestId);
         $.post("/decline_friend_request", {friend_request_id: friendRequestId}, function(data) {
             if (data.message == "decline_friend_request-success") {
               // Remove the friend request from the list on the page
@@ -62,15 +75,18 @@ $(document).ready(function() {
       $(".close-button").click(function() {
         $(this).parent().hide();
       });
-      $(".cancel-friend-request-button").click(function() {
+      $(".cancel-friend-req-btn").click(function() {
         var friendRequestId = $(this).data("friend-request-id");
         $.post("/cancel_friend_request", {friend_request_id: friendRequestId}, function(data) {
             if (data.message == "cancel_friend_request-success") {
               // Remove the friend request from the list on the page
               $("#friend-request-" + friendRequestId).remove();
+              // Add the flash message to the page
+              $("#flash-messages").append("<div class='alert-success alert-message'>" + data.flash_message + "</div>");
             } else {
               console.error("Error cancelling friend request: " + data.message);
             }
           });
       });
+
 });

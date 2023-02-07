@@ -169,23 +169,23 @@ def search_friends():
 @login_required
 def send_friend_request():
     if request.method == "POST":
-        recipient_email = request.form["recipient_email"]
-        recipient = User.query.filter_by(email=recipient_email).first()
-        if recipient is None:
+        receiver_email = request.form["receiver_email"]
+        receiver = User.query.filter_by(email=receiver_email).first()
+        if receiver is None:
             return jsonify({"message": "user_exists_none-error"}), 401
         sender = current_user
 
-        existing_request_to_sender = FriendRequest.query.filter_by(sender_id=recipient.id, receiver_id=sender.id).first()
+        existing_request_to_sender = FriendRequest.query.filter_by(sender_id=receiver.id, receiver_id=sender.id).first()
         if existing_request_to_sender is not None:
             return jsonify({"message": "friend_req_alr_received-error"}), 500
         
-        existing_friend_request = FriendRequest.query.filter_by(sender_id=sender.id, receiver_id=recipient.id).first()
+        existing_friend_request = FriendRequest.query.filter_by(sender_id=sender.id, receiver_id=receiver.id).first()
         if existing_friend_request is not None:
             return jsonify({"message": "friend_req_alr_sent-error"}), 400
-        friend_request = FriendRequest(sender_id=sender.id, receiver_id=recipient.id)
+        friend_request = FriendRequest(sender_id=sender.id, receiver_id=receiver.id)
         db.session.add(friend_request)
         db.session.commit()
-        return jsonify({"message": "send_friend_req-success"})
+        return jsonify({"message": "send_friend_req-success", "id": receiver.id, "username": receiver.username})
     else:
         flash("A fatal system error has ocurred. Please try again later.", category="error_high")
 
@@ -199,26 +199,34 @@ def cancel_friend_request():
             return jsonify({"message": "friend_request_not_found-error"}), 404
         db.session.delete(friend_request)
         db.session.commit()
-        return jsonify({"message": "cancel_friend_request-success"})
+        flash("Friend Request Cancelled.", category="success")
+        return jsonify({"message": "cancel_friend_request-success", "flash_message": "Friend Request Cancelled."})
     else:
         return jsonify({"message": "bad_request-error"}), 400
+
+
 
 
 @app.route("/accept_friend_request", methods=["POST"])
 @login_required
 def accept_friend_request():
-    data = request.get_json()
-    friend_request_id = data["friend_request_id"]
-    friend_request = FriendRequest.query.get(friend_request_id)
-    if friend_request is None:
-        return jsonify({"message": "Friend request not found"}), 400
-    friend_request.status = 'accepted'
-    friend1 = Friends(user_id=friend_request.sender_id, friend_id=friend_request.receiver_id)
-    friend2 = Friends(user_id=friend_request.receiver_id, friend_id=friend_request.sender_id)
-    db.session.add(friend1)
-    db.session.add(friend2)
-    db.session.commit()
-    return jsonify({"message": "Friend request accepted"})
+    if request.method == "POST":
+        friend_request_id = request.form["friend_request_id"]
+        friend_request = FriendRequest.query.get(friend_request_id)
+        if friend_request is None:
+            return jsonify({"message": "friend_request_not_found-error"}), 404
+        sender = User.query.get(friend_request.sender_id)
+        if sender is None:
+            return jsonify({"message": "sender_not_found-error"}), 404
+        friend = Friends(user_id=current_user.id, friend_id=friend_request.sender_id)
+        db.session.add(friend)
+        db.session.delete(friend_request)
+        db.session.commit()
+        flash("Congrats! Now you're friends with " + sender.username, category="success")
+        return jsonify({"message": "accept_friend_request-success"})
+    else:
+        flash("Sorry, there was an error, please try again later.", category="error_high")
+        return jsonify({"message": "bad_request-error"}), 400
 
 @app.route("/decline_friend_request", methods=["POST"])
 @login_required
@@ -235,7 +243,6 @@ def decline_friend_request():
     else:
         flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
-
 
 if __name__ == "__main__":
     app.run(debug=True)
