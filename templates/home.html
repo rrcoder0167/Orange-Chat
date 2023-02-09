@@ -37,7 +37,7 @@
         <h2>Friend Requests</h2>
         <ul id="friend-requests">
             {% for friend_request in friend_requests %}
-            <li>{{friend_request.sender.username}}
+            <li id="friend-request-{{friend_request.id}}">{{friend_request.sender.username}}
                 <button class="accept-friend-req-btn" data-friend-request-id="{{friend_request.id}}">Accept</button>
                 <button class="decline-friend-req-btn" data-friend-request-id="{{friend_request.id}}">Decline</button>
             </li>
@@ -46,7 +46,10 @@
         <h2>Friends</h2>
         <ul id="friends-list">
             {% for friendship in friendships %}
-                <li class="friend-item">{{ friendship.friend.username }}</li>
+                <li id="friend-{{friend.id}}">{{ friendship.friend.username }}
+                    <button class="friend-chat-btn">Chat</button>
+                    <button class="friend-block-btn">Block</button>
+                </li>
             {% endfor %}
         </ul>
 

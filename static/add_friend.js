@@ -55,6 +55,7 @@ $(document).ready(function() {
             if (data.message == "accept_friend_request-success") {
               // Remove the friend request from the list on the page
               $("#friend-request-" + friendRequestId).remove();
+              $("#friend-" + data.friend_request_id).add();
             } else {
               console.error("Error accepting friend request: " + data.message);
             }

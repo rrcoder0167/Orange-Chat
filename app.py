@@ -218,12 +218,14 @@ def accept_friend_request():
         sender = User.query.get(friend_request.sender_id)
         if sender is None:
             return jsonify({"message": "sender_not_found-error"}), 404
-        friend = Friends(user_id=current_user.id, friend_id=friend_request.sender_id)
-        db.session.add(friend)
+        friend_info = Friends(user_id=current_user.id, friend_id=friend_request.sender_id)
+        db.session.add(friend_info)
         db.session.delete(friend_request)
         db.session.commit()
+        friend = Friends.query.get(friend_info)
+        print(type(friend))
         flash("Congrats! Now you're friends with " + sender.username, category="success")
-        return jsonify({"message": "accept_friend_request-success"})
+        return jsonify({"message": "accept_friend_request-success", "friend_id": friend})
     else:
         flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
