@@ -281,7 +281,11 @@ nav {
     font-family: 'Fira Code';
     cursor: pointer;
     text-align: center;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.add-friends-button:hover {
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.2);
 }
 
 .friend-requests {
