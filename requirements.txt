@@ -141,4 +141,3 @@ Werkzeug==2.2.2
 widgetsnbextension==4.0.3
 WTForms==3.0.1
 yarl==1.8.2
-sqlite3==0.5.0

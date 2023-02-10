@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, render_template, request, flash, redirect, url_for
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
+from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
