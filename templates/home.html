@@ -18,7 +18,7 @@
         </header>
         <h1>Welcome to ChitChat!!
         </h1>
-        {% if current_user.is_authenticated %}
+        {% if session.get("logged_in") %}
         <p>You are logged in as {{current_user.name}}</p>
         <p>
             <a href="{{ url_for('logout') }}">Logout</a>
@@ -56,11 +56,12 @@
         <h2>Pending Friend Requests</h2>
         <ul id="pending-friend-requests">
         {% for friend_request in pending_friend_requests %}
-        <li id="friend-request-{{friend_request.id}}">{{friend_request.receiver.username}}
-            <button class="cancel-friend-req-btn" data-friend-request-id="{{friend_request.id}}">Cancel</button>
-        </li>
+            <li id="friend-request-{{ friend_request.id }}">{{ friend_request.username }}
+            <button class="cancel-friend-req-btn" data-friend-request-id="{{ friend_request.id }}">Cancel</button>
+            </li>
         {% endfor %}
         </ul>
+
 
         {% else %}
 

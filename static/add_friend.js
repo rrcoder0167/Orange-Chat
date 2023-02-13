@@ -78,6 +78,7 @@ $(document).ready(function() {
       });
       $(".cancel-friend-req-btn").click(function() {
         var friendRequestId = $(this).data("friend-request-id");
+        console.log(friendRequestId)
         $.post("/cancel_friend_request", {friend_request_id: friendRequestId}, function(data) {
             if (data.message == "cancel_friend_request-success") {
               // Remove the friend request from the list on the page
