@@ -6,11 +6,10 @@ from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import secrets
-import requests
 
 app = Flask(__name__)
 secret_key = secrets.token_hex(16)
-#36024aafe2dbe4b763921f96244aa393
+#"36024aafe2dbe4b763921f96244aa393"
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 #"mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
@@ -152,9 +151,10 @@ def load_user(user_id):
         )
 
 
-@app.route('/404')
-def page404():
-    return render_template("404.html")
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.html'), 404
 
 @app.route('/favicon.ico')
 def favicon():
