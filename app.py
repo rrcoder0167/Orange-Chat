@@ -56,7 +56,7 @@ class User(UserMixin):
         if self.id:
             return self.id
         return None
-
+    
     def is_authenticated(self):
         return self._is_authenticated
     
@@ -155,6 +155,10 @@ def load_user(user_id):
 def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
+
+@app.route('/griddiman')
+def griddiman():
+    return render_template('rickroll.html')
 
 @app.route('/favicon.ico')
 def favicon():
