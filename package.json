@@ -1,0 +1,19 @@
+{
+  "name": "Orange-Chat",
+  "version": "1.0.0",
+  "description": "A chat app built with Flask",
+  "main": "app.py",
+  "dependencies": {
+    "flask": "^2.1.0",
+    "flask-login": "^0.5.0",
+    "flask-pymongo": "^3.0.1",
+    "bson": "^0.5.10",
+    "werkzeug": "^2.1.0",
+    "secrets": "^1.0.2",
+    "python-dotenv": "^0.19.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "python app.py"
+  }
+}
