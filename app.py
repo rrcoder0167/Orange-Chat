@@ -182,9 +182,10 @@ def home():
         for incoming_friend_request in incoming_friend_requests:
             sender_id = incoming_friend_request["sender_id"]
             sender = mongo.db.users.find_one({"_id": ObjectId(sender_id)})
+            sender_friend_request_id = incoming_friend_request["_id"]
             if sender:
-                incoming_friend_requests_with_usernames.append({"username": sender["username"], "friend_request": incoming_friend_request})
-        
+                incoming_friend_requests_with_usernames.append({"username": sender["username"], "friend_request": incoming_friend_request, "id": sender_friend_request_id})
+        print(incoming_friend_requests_with_usernames)
         return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames, incoming_friend_requests=incoming_friend_requests_with_usernames)
     else:
         return render_template("home.html")
@@ -328,7 +329,7 @@ def send_friend_request():
             "status": "pending"
         }
         mongo.db.friend_requests.insert_one(friend_request)
-        return jsonify({"message": "send_friend_req-success", "id": receiver.id, "username": receiver["username"]})
+        return jsonify({"message": "send_friend_req-success", "id": receiver.id, "username": receiver.username})
     else:
         flash("A fatal system error has ocurred. Please try again later.", category="error_high")
 
