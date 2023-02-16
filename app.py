@@ -185,15 +185,27 @@ def home():
             sender_friend_request_id = incoming_friend_request["_id"]
             if sender:
                 incoming_friend_requests_with_usernames.append({"username": sender["username"], "friend_request": incoming_friend_request, "id": sender_friend_request_id})
-        print(incoming_friend_requests_with_usernames)
-        friendships = list(mongo.db.friends.find({"user_id": user_id}))
-        print(friendships)
-        friends = []
-        for friend in friendships:
-            friend_id = friend["friend_id"]
-            friend = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
-            if friend:
-                friends.append(friend)
+        find_user_id = list(mongo.db.friends.find({"user_id": user_id}))
+        find_friend_id = list(mongo.db.friends.find({"friend_id": user_id}))
+        friends = find_user_id + find_friend_id
+        print(friends)
+        for friend in friends:
+            if friend["user_id"] == user_id:
+                friend_id = friend["_id"]
+                friend_user_type1 = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+                friend_user_type2 = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
+                if friend_user_type1:
+                    friend["username"] = friend_user_type1["username"]
+                elif friend_user_type2:
+                    friend["username"] = friend_user_type2["username"]
+                else:
+                    friend["username"] = "Deleted User"
+
+            else:
+                friend_id = friends["user_id"]
+                friend = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
+                if friend:
+                    friends["username"] = friend["username"]
         return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames, incoming_friend_requests=incoming_friend_requests_with_usernames, friends = friends)
     else:
         return render_template("home.html")
