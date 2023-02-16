@@ -108,9 +108,10 @@ def authenticate(email, password):
 
 
 class Friends:
-    def __init__(self, user_id, friend_id):
+    def __init__(self, user_id, friend_id, friends_since):
         self.user_id = user_id
         self.friend_id = friend_id
+        self.friends_since = friends_since
 
     def add_to_db(self):
         mongo.db.friends.insert_one({
@@ -176,7 +177,6 @@ def home():
             friend_request_id = pending_friend_request["_id"]
             if receiver:
                 pending_friend_requests_with_usernames.append({"username": receiver["username"], "friend_request": pending_friend_request, "id": friend_request_id})
-        
         incoming_friend_requests = list(mongo.db.friend_requests.find({"receiver_id": user_id, "status": "pending"}))
         incoming_friend_requests_with_usernames = []
         for incoming_friend_request in incoming_friend_requests:
@@ -186,6 +186,8 @@ def home():
             if sender:
                 incoming_friend_requests_with_usernames.append({"username": sender["username"], "friend_request": incoming_friend_request, "id": sender_friend_request_id})
         print(incoming_friend_requests_with_usernames)
+        friendships = list(mongo.db.friends.find({"user_id": user_id}))
+        print(friendships)
         return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames, incoming_friend_requests=incoming_friend_requests_with_usernames)
     else:
         return render_template("home.html")
@@ -363,7 +365,8 @@ def accept_friend_request():
             return jsonify({"message": "sender_not_found-error"}), 404
         friend_info = {
             'user_id': current_user.id,
-            'friend_id': friend_request['sender_id']
+            'friend_id': friend_request['sender_id'],
+            'friends_since':  datetime.datetime.utcnow()
         }
         mongo.db.friends.insert_one(friend_info)
         mongo.db.friend_requests.delete_one({'_id': ObjectId(friend_request_id)})

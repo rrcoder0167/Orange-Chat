@@ -36,8 +36,8 @@
         </div>
         <h2>Friend Requests</h2>
         <ul id="friend-requests">
-            {% for friend_request in friend_requests %}
-            <li id="friend-request-{{ friend_request.id }}">{{friend_request.username}}
+            {% for friend_request in incoming_friend_requests %}
+            <li id="friend-request-{{ friend_request.id }}">{{ friend_request.username }}
                 <button class="accept-friend-req-btn" data-friend-request-id="{{ friend_request.id }}">Accept</button>
                 <button class="decline-friend-req-btn" data-friend-request-id="{{ friend_request.id }}">Decline</button>
             </li>
