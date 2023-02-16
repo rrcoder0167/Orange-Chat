@@ -120,11 +120,10 @@ class Friends:
         })
 
 class FriendRequest:
-    def __init__(self, sender_id, receiver_id, status):
+    def __init__(self, sender_id, receiver_id, relationship, friends_since):
         self.sender_id = sender_id
         self.receiver_id = receiver_id
-        self.status = status
-
+        self.relationship = relationship
     def add_to_db(self):
         mongo.db.friend_requests.insert_one({
             'sender_id': self.sender_id,
@@ -384,6 +383,8 @@ def accept_friend_request():
         friend_info = {
             'user_id': current_user.id,
             'friend_id': friend_request['sender_id'],
+            'friend_username': sender['username'],
+            'relationship': 'friend',
             'friends_since':  datetime.datetime.utcnow()
         }
         mongo.db.friends.insert_one(friend_info)
