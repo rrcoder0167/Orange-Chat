@@ -188,7 +188,13 @@ def home():
         print(incoming_friend_requests_with_usernames)
         friendships = list(mongo.db.friends.find({"user_id": user_id}))
         print(friendships)
-        return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames, incoming_friend_requests=incoming_friend_requests_with_usernames)
+        friends = []
+        for friend in friendships:
+            friend_id = friend["friend_id"]
+            friend = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
+            if friend:
+                friends.append(friend)
+        return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames, incoming_friend_requests=incoming_friend_requests_with_usernames, friends = friends)
     else:
         return render_template("home.html")
 

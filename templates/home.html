@@ -45,8 +45,8 @@
         </ul>
         <h2>Friends</h2>
         <ul id="friends-list">
-            {% for friendship in friendships %}
-                <li id="friend-{{friend.id}}">{{ friendship.friend.username }}
+            {% for friend in friends %}
+                <li id="friend-{{friend.id}}">{{ friend.username }}
                     <button class="friend-chat-btn">Chat</button>
                     <button class="friend-block-btn">Block</button>
                 </li>
