@@ -9,30 +9,35 @@ import secrets
 
 app = Flask(__name__)
 secret_key = secrets.token_hex(16)
-#"36024aafe2dbe4b763921f96244aa393"
+# "36024aafe2dbe4b763921f96244aa393"
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-#"mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
+# "mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 mongo = PyMongo(app)
 mongo.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 # Add a new user to the MongoDB database
 def add_user(user):
     mongo.db.users.insert_one(user.to_dict())
+
 
 # Query all users from the MongoDB database
 def get_all_users():
     return list(mongo.db.users.find())
 
+
 # Query a user by email from the MongoDB database
 def get_user_by_email(email):
     return mongo.db.users.find_one({"email": email})
 
+
 # Update a user in the MongoDB database
 def update_user(user):
     mongo.db.users.update_one({"email": user.email}, {"$set": user.to_dict()})
+
 
 class User(UserMixin):
     def __init__(self, email, password, username, name, join_date, role, last_seen, status, avatar, _id=None):
@@ -56,16 +61,16 @@ class User(UserMixin):
         if self.id:
             return self.id
         return None
-    
+
     def is_authenticated(self):
         return self._is_authenticated
-    
+
     def authenticate(self):
         self._is_authenticated = True
 
     def logout(self):
         self._is_authenticated = False
-    
+
     @property
     def is_active(self):
         return True
@@ -73,7 +78,7 @@ class User(UserMixin):
     @property
     def is_anonymous(self):
         return False
-    
+
     def to_dict(self):
         return {
             'email': self.email,
@@ -87,6 +92,7 @@ class User(UserMixin):
             'avatar': self.avatar,
             'is_authenticated': self._is_authenticated
         }
+
 
 def authenticate(email, password):
     user_profile = mongo.db.users.find_one({"email": email})
@@ -119,11 +125,13 @@ class Friends:
             'friend_id': self.friend_id
         })
 
+
 class FriendRequest:
-    def __init__(self, sender_id, receiver_id, relationship, friends_since):
+    def __init__(self, sender_id, receiver_id, status):
         self.sender_id = sender_id
         self.receiver_id = receiver_id
-        self.relationship = relationship
+        self.status = status
+
     def add_to_db(self):
         mongo.db.friend_requests.insert_one({
             'sender_id': self.sender_id,
@@ -138,17 +146,17 @@ def load_user(user_id):
     if not user:
         return None
     return User(
-            user['email'],
-            user['password'],
-            user['username'],
-            user['name'],
-            user['join_date'],
-            user['role'],
-            user['last_seen'],
-            user['status'],
-            user['avatar'],
-            str(user["_id"])
-        )
+        user['email'],
+        user['password'],
+        user['username'],
+        user['name'],
+        user['join_date'],
+        user['role'],
+        user['last_seen'],
+        user['status'],
+        user['avatar'],
+        str(user["_id"])
+    )
 
 
 @app.errorhandler(404)
@@ -156,13 +164,16 @@ def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
 
+
 @app.route('/griddiman')
 def griddiman():
     return render_template('rickroll.html')
 
+
 @app.route('/favicon.ico')
 def favicon():
     return url_for('static', filename='images/favicon.ico')
+
 
 @app.route("/")
 def home():
@@ -175,7 +186,9 @@ def home():
             receiver = mongo.db.users.find_one({"_id": ObjectId(receiver_id)})
             friend_request_id = pending_friend_request["_id"]
             if receiver:
-                pending_friend_requests_with_usernames.append({"username": receiver["username"], "friend_request": pending_friend_request, "id": friend_request_id})
+                pending_friend_requests_with_usernames.append(
+                    {"username": receiver["username"], "friend_request": pending_friend_request,
+                     "id": friend_request_id})
         incoming_friend_requests = list(mongo.db.friend_requests.find({"receiver_id": user_id, "status": "pending"}))
         incoming_friend_requests_with_usernames = []
         for incoming_friend_request in incoming_friend_requests:
@@ -183,7 +196,9 @@ def home():
             sender = mongo.db.users.find_one({"_id": ObjectId(sender_id)})
             sender_friend_request_id = incoming_friend_request["_id"]
             if sender:
-                incoming_friend_requests_with_usernames.append({"username": sender["username"], "friend_request": incoming_friend_request, "id": sender_friend_request_id})
+                incoming_friend_requests_with_usernames.append(
+                    {"username": sender["username"], "friend_request": incoming_friend_request,
+                     "id": sender_friend_request_id})
         find_user_id = list(mongo.db.friends.find({"user_id": user_id}))
         find_friend_id = list(mongo.db.friends.find({"friend_id": user_id}))
         friends = find_user_id + find_friend_id
@@ -205,7 +220,8 @@ def home():
                 friend = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
                 if friend:
                     friends["username"] = friend["username"]
-        return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames, incoming_friend_requests=incoming_friend_requests_with_usernames, friends = friends)
+        return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames,
+                               incoming_friend_requests=incoming_friend_requests_with_usernames, friends=friends)
     else:
         return render_template("home.html")
 
@@ -218,7 +234,8 @@ def login():
         user = authenticate(email, password)
         if user:
             login_user(user)
-            mongo.db.users.update_one({'email': email}, {'$set': {'status': 'active', 'last_seen': datetime.datetime.utcnow()}})
+            mongo.db.users.update_one({'email': email},
+                                      {'$set': {'status': 'active', 'last_seen': datetime.datetime.utcnow()}})
             flash("Welcome Back!! Logged in successfully.", category="success")
             session["logged_in"] = True
             session["id"] = current_user.id
@@ -260,13 +277,13 @@ def signup():
         return render_template("signup.html")
 
 
-
 @app.route("/logout")
 @login_required
 def logout():
     if current_user.is_authenticated:
         session.clear()
-        mongo.db.users.update_one({'email': current_user.email}, {'$set': {'status': 'away', 'last_seen': datetime.datetime.utcnow()}})
+        mongo.db.users.update_one({'email': current_user.email},
+                                  {'$set': {'status': 'away', 'last_seen': datetime.datetime.utcnow()}})
         logout_user()
         flash("Logged out successfully.", category="success")
     return redirect(url_for("home"))
@@ -276,9 +293,11 @@ def logout():
 def about():
     return 'orange chat is like cwazy at life bwo'
 
+
 @app.route('/testing')
 def testing():
     return render_template('testing.html')
+
 
 @app.route("/search_friends", methods=["GET", "POST"])
 @login_required
@@ -308,15 +327,15 @@ def send_friend_request():
     if request.method == "POST":
         receiver_email = request.form["receiver_email"]
         sender = User(_id=current_user.id,
-              username=current_user.username,
-              email=current_user.email,
-              password=current_user.password,
-              name=current_user.name,
-              join_date=current_user.join_date,
-              role=current_user.role,
-              last_seen=current_user.last_seen,
-              status=current_user.status,
-              avatar=current_user.avatar)
+                      username=current_user.username,
+                      email=current_user.email,
+                      password=current_user.password,
+                      name=current_user.name,
+                      join_date=current_user.join_date,
+                      role=current_user.role,
+                      last_seen=current_user.last_seen,
+                      status=current_user.status,
+                      avatar=current_user.avatar)
 
         receiver_data = mongo.db.users.find_one({"email": receiver_email})
         receiver = User(
@@ -333,15 +352,17 @@ def send_friend_request():
         )
         if receiver is None:
             return jsonify({"message": "user_exists_none-error"}), 401
-        existing_request_to_sender = mongo.db.friend_requests.find_one({"sender_id": receiver._id, "receiver_id": sender._id})
+        existing_request_to_sender = mongo.db.friend_requests.find_one(
+            {"sender_id": receiver._id, "receiver_id": sender._id})
         if existing_request_to_sender is not None:
             return jsonify({"message": "friend_req_alr_received-error"}), 500
-        
-        existing_friend_request = mongo.db.friend_requests.find_one({"sender_id": sender._id, "receiver_id": receiver._id})
+
+        existing_friend_request = mongo.db.friend_requests.find_one(
+            {"sender_id": sender._id, "receiver_id": receiver._id})
 
         if existing_friend_request is not None:
             return jsonify({"message": "friend_req_alr_sent-error"}), 400
-        
+
         friend_request = {
             "sender_id": sender.id,
             "receiver_id": receiver.id,
@@ -385,7 +406,7 @@ def accept_friend_request():
             'friend_id': friend_request['sender_id'],
             'friend_username': sender['username'],
             'relationship': 'friend',
-            'friends_since':  datetime.datetime.utcnow()
+            'friends_since': datetime.datetime.utcnow()
         }
         mongo.db.friends.insert_one(friend_info)
         mongo.db.friend_requests.delete_one({'_id': ObjectId(friend_request_id)})
@@ -410,4 +431,4 @@ def decline_friend_request():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(ssl_context="adhoc", debug=True)
