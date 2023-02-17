@@ -127,10 +127,10 @@ class Friends:
 
 
 class FriendRequest:
-    def __init__(self, sender_id, receiver_id, relationship, friends_since):
+    def __init__(self, sender_id, receiver_id, status):
         self.sender_id = sender_id
         self.receiver_id = receiver_id
-        self.relationship = relationship
+        self.status = status
 
     def add_to_db(self):
         mongo.db.friend_requests.insert_one({
@@ -431,4 +431,4 @@ def decline_friend_request():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(ssl_context="adhoc", debug=True)
