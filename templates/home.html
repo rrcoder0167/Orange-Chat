@@ -48,8 +48,9 @@
         <ul id="friends-list">
             {% for friend in friends %}
                 <li id="friend-{{ friend.id }}">{{ friend.username }}
-                    <button class="friend-chat-btn">Chat</button>
-                    <button class="friend-block-btn">Block</button>
+                <button class="remove-friend-btn" data-friend-id="{{ friend.id }}">Remove</button>
+                <button class="chat-btn" data-friend-id="{{ friend.id }}">Chat</button>
+                <button class="block-friend-btn" data-friend-id="{{ friend.id }}">Block</button>                
                 </li>
             {% endfor %}
         </ul>
