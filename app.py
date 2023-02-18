@@ -133,7 +133,7 @@ class FriendRequest:
         self.sender_id = sender_id
         self.receiver_id = receiver_id
         self.status = status
-    
+
     def add_to_db(self):
         mongo.db.friend_requests.insert_one({
             'sender_id': self.sender_id,
@@ -181,7 +181,7 @@ def favicon():
 
 @app.route("/")
 def home():
-    if session.get("logged_in") == True:
+    if session.get("logged_in"):
         user_id = session.get("id")
 
         pending_friend_requests = list(mongo.db.friend_requests.find({"sender_id": user_id, "status": "pending"}))
@@ -205,7 +205,6 @@ def home():
                     {"username": sender["username"], "friend_request": incoming_friend_request,
                      "id": sender_friend_request_id})
 
-
         # Retrieve all friends for the current user
         find_user_id = list(mongo.db.friends.find({"user_id": user_id, "relationship": "active"}))
         find_friend_id = list(mongo.db.friends.find({"friend_id": user_id, "relationship": "active"}))
@@ -226,7 +225,7 @@ def home():
 
             if friend_username:
                 friends.append({"username": friend_username, "_id": friend_id})
-                
+
         return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames,
                                incoming_friend_requests=incoming_friend_requests_with_usernames, friends=friends)
     else:
