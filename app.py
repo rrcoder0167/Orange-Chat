@@ -184,29 +184,27 @@ def home():
     if session.get("logged_in") == True:
         user_id = session.get("id")
 
-        # Retrieve all pending friend requests for the current user
-        pending_friend_requests = list(mongo.db.friend_requests.find({"receiver_id": user_id, "status": "pending"}))
-
-        # Retrieve the username for each sender of the pending friend requests
+        pending_friend_requests = list(mongo.db.friend_requests.find({"sender_id": user_id, "status": "pending"}))
         pending_friend_requests_with_usernames = []
-        for request in pending_friend_requests:
-            sender = mongo.db.users.find_one({"_id": ObjectId(request["sender_id"])})
-            if sender:
-                pending_friend_requests_with_usernames.append({"username": sender["username"],
-                                                               "friend_request": request,
-                                                               "id": request["_id"]})
-
-        # Retrieve all incoming friend requests for the current user
-        incoming_friend_requests = list(mongo.db.friend_requests.find({"sender_id": user_id, "status": "pending"}))
-
-        # Retrieve the username for each receiver of the incoming friend requests
-        incoming_friend_requests_with_usernames = []
-        for request in incoming_friend_requests:
-            receiver = mongo.db.users.find_one({"_id": ObjectId(request["receiver_id"])})
+        for pending_friend_request in pending_friend_requests:
+            receiver_id = pending_friend_request["receiver_id"]
+            receiver = mongo.db.users.find_one({"_id": ObjectId(receiver_id)})
+            friend_request_id = pending_friend_request["_id"]
             if receiver:
-                incoming_friend_requests_with_usernames.append({"username": receiver["username"],
-                                                                "friend_request": request,
-                                                                "id": request["_id"]})
+                pending_friend_requests_with_usernames.append(
+                    {"username": receiver["username"], "friend_request": pending_friend_request,
+                     "id": friend_request_id})
+        incoming_friend_requests = list(mongo.db.friend_requests.find({"receiver_id": user_id, "status": "pending"}))
+        incoming_friend_requests_with_usernames = []
+        for incoming_friend_request in incoming_friend_requests:
+            sender_id = incoming_friend_request["sender_id"]
+            sender = mongo.db.users.find_one({"_id": ObjectId(sender_id)})
+            sender_friend_request_id = incoming_friend_request["_id"]
+            if sender:
+                incoming_friend_requests_with_usernames.append(
+                    {"username": sender["username"], "friend_request": incoming_friend_request,
+                     "id": sender_friend_request_id})
+
 
         # Retrieve all friends for the current user
         find_user_id = list(mongo.db.friends.find({"user_id": user_id, "relationship": "active"}))
