@@ -462,6 +462,18 @@ def block_friend():
         flask("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
 
+@app.route("/unblock_friend", methods=["POST"])
+@login_required
+def unblock_friend():
+    if request.method == "POST":
+        friend_id = request.form["friend_id"]
+        mongo.db.friends.update_one('id', ObjectId(friend_id), {'$set': {'relationship': 'active'}})
+        flask("Friend Unblocked.", category="success")
+        return jsonify({"message": "unblock_friend-success"})
+    else:
+        flask("Sorry, there was an error, please try again later.", category="error_high")
+        return jsonify({"message": "bad_request-error"}), 400
+
 
 if __name__ == "__main__":
     app.run(ssl_context="adhoc", debug=True)
