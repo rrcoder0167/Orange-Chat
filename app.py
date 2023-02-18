@@ -410,7 +410,7 @@ def accept_friend_request():
             'user_id': current_user.id,
             'friend_id': friend_request['sender_id'],
             'friend_username': sender['username'],
-            'relationship': 'friend',
+            'relationship': 'active',
             'friends_since': datetime.datetime.utcnow()
         }
         mongo.db.friends.insert_one(friend_info)
@@ -432,6 +432,30 @@ def decline_friend_request():
         return jsonify({"message": "decline_friend_request-success"})
     else:
         flash("Sorry, there was an error, please try again later.", category="error_high")
+        return jsonify({"message": "bad_request-error"}), 400
+
+@app.route("/remove_friend", methods=["POST"])
+@login_required
+def remove_friend():
+    if request.method == "POST":
+        friend_id = request.form["friend_id"]
+        mongo.db.friends.delete_one({'_id': ObjectId(friend_id)})
+        flash("Friend Removed.", category="success")
+        return jsonify({"message": "remove_friend-success"})
+    else:
+        flash("Sorry, there was an error, please try again later.", category="error_high")
+        return jsonify({"message": "bad_request-error"}), 400
+    
+@app.route("/block_friend", methods=["POST"])
+@login_required
+def block_friend():
+    if request.method == "POST":
+        friend_id = request.form["friend_id"]
+        mongo.db.friends.update_one({'_id': ObjectId(friend_id)}, {'$set': {'relationship': 'blocked'}})
+        flash("Friend Blocked.", category="success")
+        return jsonify({"message": "block_friend-success"})
+    else:
+        flask("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
 
 
