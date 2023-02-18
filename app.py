@@ -138,7 +138,7 @@ class FriendRequest:
             'receiver_id': self.receiver_id,
             'status': self.status
         })
-
+# Path: app.py
 
 @login_manager.user_loader
 def load_user(user_id):
