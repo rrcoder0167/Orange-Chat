@@ -113,9 +113,12 @@ def authenticate(email, password):
 
 
 class Friends:
-    def __init__(self, user_id, friend_id, friends_since):
+    def __init__(self, user_id, friend_id, user_username, friend_username, relationship, friends_since):
         self.user_id = user_id
         self.friend_id = friend_id
+        self.user_username = user_username
+        self.friend_username = friend_username
+        self.relationship = relationship
         self.friends_since = friends_since
 
     def add_to_db(self):
@@ -130,7 +133,7 @@ class FriendRequest:
         self.sender_id = sender_id
         self.receiver_id = receiver_id
         self.status = status
-
+    
     def add_to_db(self):
         mongo.db.friend_requests.insert_one({
             'sender_id': self.sender_id,
@@ -206,8 +209,8 @@ def home():
                                                                 "id": request["_id"]})
 
         # Retrieve all friends for the current user
-        find_user_id = list(mongo.db.friends.find({"user_id": user_id}))
-        find_friend_id = list(mongo.db.friends.find({"friend_id": user_id}))
+        find_user_id = list(mongo.db.friends.find({"user_id": user_id, "relationship": "active"}))
+        find_friend_id = list(mongo.db.friends.find({"friend_id": user_id, "relationship": "active"}))
         friends = []
         for friend in find_user_id + find_friend_id:
             friend_id = None
@@ -225,7 +228,7 @@ def home():
 
             if friend_username:
                 friends.append({"username": friend_username, "_id": friend_id})
-
+                
         return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames,
                                incoming_friend_requests=incoming_friend_requests_with_usernames, friends=friends)
     else:
@@ -410,6 +413,7 @@ def accept_friend_request():
         friend_info = {
             'user_id': current_user.id,
             'friend_id': friend_request['sender_id'],
+            'user_username': current_user.username,
             'friend_username': sender['username'],
             'relationship': 'active',
             'friends_since': datetime.datetime.utcnow()
