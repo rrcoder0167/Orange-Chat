@@ -137,6 +137,8 @@ class FriendRequest:
             'receiver_id': self.receiver_id,
             'status': self.status
         })
+
+
 # Path: app.py
 
 @login_manager.user_loader
@@ -178,31 +180,31 @@ def favicon():
 def home():
     if session.get("logged_in") == True:
         user_id = session.get("id")
-        
+
         # Retrieve all pending friend requests for the current user
         pending_friend_requests = list(mongo.db.friend_requests.find({"receiver_id": user_id, "status": "pending"}))
-        
+
         # Retrieve the username for each sender of the pending friend requests
         pending_friend_requests_with_usernames = []
         for request in pending_friend_requests:
             sender = mongo.db.users.find_one({"_id": ObjectId(request["sender_id"])})
             if sender:
-                pending_friend_requests_with_usernames.append({"username": sender["username"], 
-                                                                "friend_request": request, 
-                                                                "id": request["_id"]})
-                
+                pending_friend_requests_with_usernames.append({"username": sender["username"],
+                                                               "friend_request": request,
+                                                               "id": request["_id"]})
+
         # Retrieve all incoming friend requests for the current user
         incoming_friend_requests = list(mongo.db.friend_requests.find({"sender_id": user_id, "status": "pending"}))
-        
+
         # Retrieve the username for each receiver of the incoming friend requests
         incoming_friend_requests_with_usernames = []
         for request in incoming_friend_requests:
             receiver = mongo.db.users.find_one({"_id": ObjectId(request["receiver_id"])})
             if receiver:
-                incoming_friend_requests_with_usernames.append({"username": receiver["username"], 
-                                                                 "friend_request": request, 
-                                                                 "id": request["_id"]})
-                
+                incoming_friend_requests_with_usernames.append({"username": receiver["username"],
+                                                                "friend_request": request,
+                                                                "id": request["_id"]})
+
         # Retrieve all friends for the current user
         find_user_id = list(mongo.db.friends.find({"user_id": user_id}))
         find_friend_id = list(mongo.db.friends.find({"friend_id": user_id}))
@@ -214,21 +216,20 @@ def home():
                 friend_id = friend["friend_id"]
             else:
                 friend_id = friend["user_id"]
-            
+
             friend_obj = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
             if friend_obj:
                 friend_username = friend_obj["username"]
             else:
                 friend_username = "Deleted User"
-                
+
             if friend_username:
                 friends.append({"username": friend_username, "_id": friend_id})
-        
+
         return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames,
                                incoming_friend_requests=incoming_friend_requests_with_usernames, friends=friends)
     else:
         return render_template("home.html")
-
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -434,6 +435,7 @@ def decline_friend_request():
         flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
 
+
 @app.route("/remove_friend", methods=["POST"])
 @login_required
 def remove_friend():
@@ -445,7 +447,8 @@ def remove_friend():
     else:
         flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
-    
+
+
 @app.route("/block_friend", methods=["POST"])
 @login_required
 def block_friend():
