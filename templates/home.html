@@ -25,8 +25,8 @@
             <div class="profile-img-container">
               <img src="https://avatars.githubusercontent.com/u/106852975?s=100&v=4" alt="profile image">
             </div>
-            <div class="profile-name"
-              rrcoder0167
+            <div class="profile-name">
+              <span>{{current_user.username}}</span>
             </div>
             <span class="dropdown-arrow">
               <i class="fas fa-chevron-down"></i>
@@ -36,7 +36,7 @@
               <div class="user-details">
               <span class="name">{{current_user.name}}</span>
                 <span class="user-badge admin">
-                <span>Admin</span>
+                <span>{{current_user.role}}</span>
                 <div class="description" id="badge-description">Woah, an admin? That's rare.</div>
               </span>
               <br>

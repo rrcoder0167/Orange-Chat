@@ -178,7 +178,7 @@ nav {
 
 :root {
     font-size: 15.5px;
-    font-family: "Fira Code", sans-serif;
+    font-family: "Poppins", sans-serif;
   }
 
 .popup-window {
@@ -633,7 +633,27 @@ nav {
   .user-badge.user {
     background-color: #74b9ff;
   }
+
+  .user-badge.banana {
+    background-color: #fdcb6e;
+  }
+
+  .user-badge.orange {
+    background-color: #ff9539;
+  }
+
+  .user-badge.plum {
+    background-color: #6c5ce7;
+  }
   
+  .user-badge.butter {
+    background-color: #fdcb6e;
+  }
+
+  .user-badge.developer {
+    background-color: #00b894;
+  }
+
   .user-badge .description {
     visibility: hidden;
     opacity: 0;
