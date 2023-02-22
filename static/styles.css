@@ -107,7 +107,7 @@ nav {
 }
 
 .nav-left {
-    display: none; /* initially hide the left menu */
+    display: flex; /* initially hide the left menu */
 }
 
 .nav-left.show {
