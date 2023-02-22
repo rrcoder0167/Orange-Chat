@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>ChitChat Application</title>
-        <link href='https://fonts.googleapis.com/css?family=Fira Code' rel='stylesheet'>
+        <meta charset="utf-8">
+        <title>Orange Chat</title>
+        <link href="https://fonts.googleapis.com/css?family=Fira Code" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.js"></script>
         <script src="{{url_for('static', filename='add_friend.js')}}"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src="{{url_for('static', filename='script.js')}}"></script>
         <script src="{{url_for('static', filename='navbar.js')}}"></script>
+        <script src="{{url_for('static', filename='profile_btn.js')}}"></script>
     </head>
     <body>
         <header>
@@ -16,9 +18,42 @@
             {% include 'header.html' %}
             {% block content %}{% endblock %}
         </header>
-        <h1>Welcome to ChitChat!!
-        </h1>
         {% if session.get("logged_in") %}
+
+        <div class = "profile-btn-container">
+            <button class="profile-btn">
+            <div class="profile-img-container">
+              <img src="https://avatars.githubusercontent.com/u/106852975?s=100&v=4" alt="profile image">
+            </div>
+            <div class="profile-name">
+              rrcoder0167
+            </div>
+            <span class="dropdown-arrow">
+              <i class="fas fa-chevron-down"></i>
+            </span>
+            
+            <ul class="dropdown-menu">
+              <div class="user-details">
+              <span class="name">{{current_user.name}}</span>
+                <span class="user-badge admin">
+                <span>Admin</span>
+                <div class="description" id="badge-description">Woah, an admin? That's rare.</div>
+              </span>
+              <br>
+              <span class="email">{{ current_user.email }}</span>
+              </div>
+              <hr />
+            <a href="#">Account Settings</a>
+            <a href="#">Send Feedback</a>
+            <a href="#">Report a Bug</a>
+              <hr />
+              <div class="logout-btn">
+              <a href="{{ url_for('logout')}}">Logout</a>
+              </div>
+          </ul>
+          </button>
+          </div>
+
         <p>You are logged in as {{current_user.name}}</p>
         <p>
             <a href="{{ url_for('logout') }}">Logout</a>
@@ -47,8 +82,9 @@
         <ul id="friends-list">
             {% for friend in friends %}
                 <li id="friend-{{ friend.id }}">{{ friend.username }}
-                    <button class="friend-chat-btn">Chat</button>
-                    <button class="friend-block-btn">Block</button>
+                <button class="remove-friend-btn" data-friend-id="{{ friend.id }}">Remove</button>
+                <button class="chat-btn" data-friend-id="{{ friend.id }}">Chat</button>
+                <button class="block-friend-btn" data-friend-id="{{ friend.id }}">Block</button>                
                 </li>
             {% endfor %}
         </ul>

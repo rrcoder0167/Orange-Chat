@@ -14,7 +14,6 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 # "mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 mongo = PyMongo(app)
-mongo.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -114,9 +113,12 @@ def authenticate(email, password):
 
 
 class Friends:
-    def __init__(self, user_id, friend_id, friends_since):
+    def __init__(self, user_id, friend_id, user_username, friend_username, relationship, friends_since):
         self.user_id = user_id
         self.friend_id = friend_id
+        self.user_username = user_username
+        self.friend_username = friend_username
+        self.relationship = relationship
         self.friends_since = friends_since
 
     def add_to_db(self):
@@ -139,6 +141,8 @@ class FriendRequest:
             'status': self.status
         })
 
+
+# Path: app.py
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -177,8 +181,9 @@ def favicon():
 
 @app.route("/")
 def home():
-    if session.get("logged_in") == True:
+    if session.get("logged_in"):
         user_id = session.get("id")
+
         pending_friend_requests = list(mongo.db.friend_requests.find({"sender_id": user_id, "status": "pending"}))
         pending_friend_requests_with_usernames = []
         for pending_friend_request in pending_friend_requests:
@@ -199,27 +204,28 @@ def home():
                 incoming_friend_requests_with_usernames.append(
                     {"username": sender["username"], "friend_request": incoming_friend_request,
                      "id": sender_friend_request_id})
-        find_user_id = list(mongo.db.friends.find({"user_id": user_id}))
-        find_friend_id = list(mongo.db.friends.find({"friend_id": user_id}))
-        friends = find_user_id + find_friend_id
-        print(friends)
-        for friend in friends:
-            if friend["user_id"] == user_id:
-                friend_id = friend["_id"]
-                friend_user_type1 = mongo.db.users.find_one({"_id": ObjectId(user_id)})
-                friend_user_type2 = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
-                if friend_user_type1:
-                    friend["username"] = friend_user_type1["username"]
-                elif friend_user_type2:
-                    friend["username"] = friend_user_type2["username"]
-                else:
-                    friend["username"] = "Deleted User"
 
+        # Retrieve all friends for the current user
+        find_user_id = list(mongo.db.friends.find({"user_id": user_id, "relationship": "active"}))
+        find_friend_id = list(mongo.db.friends.find({"friend_id": user_id, "relationship": "active"}))
+        friends = []
+        for friend in find_user_id + find_friend_id:
+            friend_id = None
+            friend_username = None
+            if friend["user_id"] == user_id:
+                friend_id = friend["friend_id"]
             else:
-                friend_id = friends["user_id"]
-                friend = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
-                if friend:
-                    friends["username"] = friend["username"]
+                friend_id = friend["user_id"]
+
+            friend_obj = mongo.db.users.find_one({"_id": ObjectId(friend_id)})
+            if friend_obj:
+                friend_username = friend_obj["username"]
+            else:
+                friend_username = "Deleted User"
+
+            if friend_username:
+                friends.append({"username": friend_username, "_id": friend_id})
+
         return render_template("home.html", pending_friend_requests=pending_friend_requests_with_usernames,
                                incoming_friend_requests=incoming_friend_requests_with_usernames, friends=friends)
     else:
@@ -404,8 +410,9 @@ def accept_friend_request():
         friend_info = {
             'user_id': current_user.id,
             'friend_id': friend_request['sender_id'],
+            'user_username': current_user.username,
             'friend_username': sender['username'],
-            'relationship': 'friend',
+            'relationship': 'active',
             'friends_since': datetime.datetime.utcnow()
         }
         mongo.db.friends.insert_one(friend_info)
@@ -427,6 +434,44 @@ def decline_friend_request():
         return jsonify({"message": "decline_friend_request-success"})
     else:
         flash("Sorry, there was an error, please try again later.", category="error_high")
+        return jsonify({"message": "bad_request-error"}), 400
+
+
+@app.route("/remove_friend", methods=["POST"])
+@login_required
+def remove_friend():
+    if request.method == "POST":
+        friend_id = request.form["friend_id"]
+        mongo.db.friends.delete_one({'_id': ObjectId(friend_id)})
+        flash("Friend Removed.", category="success")
+        return jsonify({"message": "remove_friend-success"})
+    else:
+        flash("Sorry, there was an error, please try again later.", category="error_high")
+        return jsonify({"message": "bad_request-error"}), 400
+
+
+@app.route("/block_friend", methods=["POST"])
+@login_required
+def block_friend():
+    if request.method == "POST":
+        friend_id = request.form["friend_id"]
+        mongo.db.friends.update_one({'_id': ObjectId(friend_id)}, {'$set': {'relationship': 'blocked'}})
+        flash("Friend Blocked.", category="success")
+        return jsonify({"message": "block_friend-success"})
+    else:
+        flask("Sorry, there was an error, please try again later.", category="error_high")
+        return jsonify({"message": "bad_request-error"}), 400
+
+@app.route("/unblock_friend", methods=["POST"])
+@login_required
+def unblock_friend():
+    if request.method == "POST":
+        friend_id = request.form["friend_id"]
+        mongo.db.friends.update_one('id', ObjectId(friend_id), {'$set': {'relationship': 'active'}})
+        flask("Friend Unblocked.", category="success")
+        return jsonify({"message": "unblock_friend-success"})
+    else:
+        flask("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
 
 
