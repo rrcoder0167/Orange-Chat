@@ -6,7 +6,7 @@ Finally, a custom chatting application that doesn't suck, built by a person that
 
 :warning: Orange Chat is currently work in progress. Once it's finished it will deployed on the website ```orangechat.tech```. There may be bugs or security vulernabilities in the program running it on your computer. Orange is not liable for any damage commited to your computer if there are any issues during installation.
 
-Prerequisites:
+#### Prerequisites:
 
 * Python 3.8 or higher installed(tested and developed using Python 3.11.2)
 * A Mac, Windows, or Linux system
