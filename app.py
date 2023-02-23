@@ -11,7 +11,7 @@ app = Flask(__name__)
 secret_key = secrets.token_hex(16)
 # "36024aafe2dbe4b763921f96244aa393"
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-"mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
+# "mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 mongo = PyMongo(app)
 login_manager = LoginManager()
@@ -459,7 +459,7 @@ def block_friend():
         flash("Friend Blocked.", category="success")
         return jsonify({"message": "block_friend-success"})
     else:
-        flask("Sorry, there was an error, please try again later.", category="error_high")
+        flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
 
 @app.route("/unblock_friend", methods=["POST"])
@@ -468,12 +468,11 @@ def unblock_friend():
     if request.method == "POST":
         friend_id = request.form["friend_id"]
         mongo.db.friends.update_one('id', ObjectId(friend_id), {'$set': {'relationship': 'active'}})
-        flask("Friend Unblocked.", category="success")
+        flash("Friend Unblocked.", category="success")
         return jsonify({"message": "unblock_friend-success"})
     else:
-        flask("Sorry, there was an error, please try again later.", category="error_high")
+        flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
-
 
 if __name__ == "__main__":
     app.run(ssl_context="adhoc", debug=True)
