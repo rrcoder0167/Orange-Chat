@@ -73,14 +73,14 @@ set SECRET_KEY=put_your_random_string_here
 ### Step 6
 
 That's it! You're all done! Now, just run `flask run` in your terminal. When you type that in, you should get something like this in your terminal:
-```bash
-  * Debug mode: off
+```
+* Debug mode: off
 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
   * Running on http://127.0.0.1:5000
 Press CTRL+C to quit
 ```
 
-The last thing you have to do is go to your web browser and type in the link `http://127.0.0.1:5000` or whatever url shows up when you run `flask run`. If you want to quit the program, just go back to your terminal and do You should see the current progress of the Orange Chat application. At times, it may not work if there is a certain error that I'm trying to fix on my local copy, not commited to github. If there are any issues or features you would like to suggest, add a bug or issue in this github repo.
+The last thing you have to do is go to your web browser and type in the link `http://127.0.0.1:5000` or whatever url shows up when you run `flask run`. If you want to quit the program, just go back to your terminal and do <kbd>control</kbd> + <kbd>c</kbd> on your keyboard. At times, the program may not work if there is a certain error that I'm trying to fix on my local copy, not commited to github. If there are any issues or features you would like to suggest, add a bug or issue in this github repo.
 
 ## Current Development Progress
 
