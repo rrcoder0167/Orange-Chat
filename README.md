@@ -119,5 +119,4 @@ Thanks for checking this project out!
 * Aarnav Anand: Orange company name creator
 * Shankara Mohan: UI Design Ideas
 * Abhinav Venkat: Minor Development Help
-* Toshit Chawda: Minor Development Help
 * My friends: Support during project creation
