@@ -116,6 +116,7 @@ Thanks for checking this project out!
 
 ## Credits
 
+* Riddhiman Rana: Orange Chat CEO and Developer
 * Aarnav Anand: Orange company name creator
 * Shankara Mohan: UI Design Ideas
 * Abhinav Venkat: Minor Development Help
