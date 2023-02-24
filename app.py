@@ -9,10 +9,10 @@ import secrets
 
 app = Flask(__name__)
 secret_key = secrets.token_hex(16)
-# "36024aafe2dbe4b763921f96244aa393"
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+# "36024aafe2dbe4b763921f96244aa393"    
+app.config['SECRET_KEY'] = "36024aafe2dbe4b763921f96244aa393"
 # "mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
-app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
+app.config["MONGO_URI"] = "mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
 mongo = PyMongo(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -63,7 +63,8 @@ class User(UserMixin):
 
     def is_authenticated(self):
         return self._is_authenticated
-
+    
+    @propergtyx
     def authenticate(self):
         self._is_authenticated = True
 
