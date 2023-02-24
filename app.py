@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request, flash, redirect, ses
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from flask_pymongo import PyMongo
 import datetime
+from flask_socketio import SocketIO, emit
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -64,7 +65,6 @@ class User(UserMixin):
     def is_authenticated(self):
         return self._is_authenticated
     
-    @propergtyx
     def authenticate(self):
         self._is_authenticated = True
 
@@ -474,6 +474,8 @@ def unblock_friend():
     else:
         flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
+
+
 
 if __name__ == "__main__":
     app.run(ssl_context="adhoc", debug=True)
