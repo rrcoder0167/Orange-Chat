@@ -2,7 +2,6 @@ from flask import Flask, jsonify, render_template, request, flash, redirect, ses
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from flask_pymongo import PyMongo
 import datetime
-from flask_socketio import SocketIO, emit
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -18,6 +17,9 @@ mongo = PyMongo(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+# Docker Container Commands
+# Docker Build: docker build -t orange-chat .
+# Docker Run: docker run -p 5000:5000 orange-chat
 
 # Add a new user to the MongoDB database
 def add_user(user):
