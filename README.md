@@ -1,6 +1,6 @@
 # Orange Chat
 
-Finally, a custom chatting application that doesn't suck, built by a person that loves :tangerine:oranges.
+Finally, an open-source custom chatting application that doesn't suck, built by a person that loves :tangerine:oranges.
 
 ## Installation
 
