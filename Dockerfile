@@ -18,4 +18,3 @@ RUN pip install gunicorn
 
 # Set the entrypoint to the Flask app
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
-
