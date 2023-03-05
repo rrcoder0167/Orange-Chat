@@ -791,18 +791,25 @@ nav {
     width: 450px;
     margin: 0 auto;
   }
+  
   .tab-content ul {
     padding: 2px;
     list-style-type: none;
   }
+  
   .friend-info {
     display: flex;
     align-items: center;
     padding: 10px;
     border-radius: 10px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     background-color: #FFFFFF;
     margin-bottom: 10px;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  .friend-info:hover {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  
   }
   
   .friend-image {
@@ -813,12 +820,12 @@ nav {
     margin-right: 10px;
     overflow: hidden;
   }
+  
   .friend-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-
   
   .friend-details {
     display: flex;
@@ -828,21 +835,58 @@ nav {
   
   .friend-username {
     font-size: 17px;
+    margin-right: 200px;
     margin-bottom: 17px;
   }
   
   .friend-actions button {
-    margin-left: 10px;
+    margin-left: 0px;
     padding: 5px;
+    width: 30px;
+    height: 30px;
     border: none;
-    border-radius: 5px;
-    background-color: #3F9B0B;
-    color: #FFFFFF;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #000000;
     font-size: 15px;
+    transition: background-color 0.3s ease-in-out;
     cursor: pointer;
   }
   
   .friend-actions button:hover {
-    background-color: #2D7C08;
+    background-color: #f2f2f2;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 175px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 1px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    display: none;
+  }
+  
+  .dropdown-item {
+    font-size: 15px;
+    padding: 5px 10px;
+    color: #000000;
+    cursor: pointer;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f2f2f2;
+    font-weight: 600;
+    color: #000000;
   }
   

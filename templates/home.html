@@ -37,31 +37,32 @@
                 <h2>Direct Messages</h2>
                 <p>Content for direct messages tab goes here.</p>
               </div>
-              <div class="tab-content" id="chat-server">
-                <h2>Friends</h2>
-                <p>Content for friends tab goes here.</p>
-              </div>
               <div class="tab-content" id="user-friends">
                 <h2>My Friends</h2>
                 <ul id="friends-list">
-                    {% for friend in friends %}
-                    <li id="friend-{{ friend.id }}">
+                  {% for friend in friends %}
+                  <li id="friend-{{ friend.id }}">
                     <div class="friend-info">
-                        <div class="friend-image">
+                      <div class="friend-image">
                         <!-- Add your friend's profile image here -->
                         <img src="https://via.placeholder.com/40"></img>
-                        </div>
-                        <div class="friend-details">
+                      </div>
+                      <div class="friend-details">
                         <h3 class="friend-username">{{ friend.username }}</h3>
                         <div class="friend-actions">
-                            <button class="remove-friend-btn" data-friend-id="{{ friend.id }}">Remove</button>
-                            <button class="chat-btn" data-friend-id="{{ friend.id }}">Chat</button>
-                            <button class="block-friend-btn" data-friend-id="{{ friend.id }}">Block</button>
+                          <button class="chat-btn" data-friend-id="{{ friend.id }}"><i class="fas fa-comment-dots"></i></button>
+                          <div class="dropdown">
+                            <button class="dropbtn"><i class="fas fa-ellipsis-v"></i></button>
+                            <div class="dropdown-submenu">
+                              <div class="dropdown-item remove-friend-btn" data-friend-id="{{ friend.id }}">Remove</div>
+                              <div class="dropdown-item block-friend-btn" data-friend-id="{{ friend.id }}">Block</div>
+                            </div>
+                          </div>
                         </div>
-                        </div>
+                      </div>
                     </div>
-                    </li>
-                    {% endfor %}
+                  </li>
+                  {% endfor %}
                 </ul>
               </div>
               <div class="tab-content" id="settings">

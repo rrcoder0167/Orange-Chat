@@ -44,3 +44,18 @@ $(document).ready(() => {
     firstTabContent.style.display = 'block';
     
 });
+
+var dropdown = document.getElementsByClassName("dropdown");
+var i;
+
+for (i = 0; i < dropdown.length; i++) {
+  dropdown[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var dropdownSubmenu = this.getElementsByClassName("dropdown-submenu")[0];
+    if (dropdownSubmenu.style.display === "block") {
+      dropdownSubmenu.style.display = "none";
+    } else {
+      dropdownSubmenu.style.display = "block";
+    }
+  });
+}
