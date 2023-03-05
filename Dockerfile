@@ -11,10 +11,10 @@ COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose port 8080 for the Flask app
-EXPOSE 8080
+EXPOSE 80
 
 # Install gunicorn
 RUN pip install gunicorn
 
 # Set the entrypoint to the Flask app
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]

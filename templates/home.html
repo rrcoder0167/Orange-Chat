@@ -5,13 +5,15 @@
         <title>Orange Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Fira Code" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="{{url_for('static', filename='friends.js')}}"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
         <script src="{{url_for('static', filename='script.js')}}"></script>
         <script src="{{url_for('static', filename='navbar.js')}}"></script>
+        <script src="{{url_for('static', filename='orange_ui.js')}}"></script>
         <script src="{{url_for('static', filename='profile_btn.js')}}"></script>
+        
     </head>
     <body>
         <header>
@@ -20,7 +22,55 @@
             {% block content %}{% endblock %}
         </header>
         {% if session.get("logged_in") %}
-
+          
+        <ul class="tab-bar">
+            <li class="tab active" data-tab-content="chat-dm"><i class="fas fa-comment"></i></li>
+            <li class="tab" data-tab-content="chat-server"><i class="fas fa-user-friends"></i></li>
+            <li class="tab" data-tab-content="user-friends"><i class="fas fa-users"></i></li>
+            <li class="tab" data-tab-content="settings"><i class="fas fa-cog"></i></li>
+            <div class="slide"></div>
+          </ul>
+          
+          <div class="window">
+            <div class="content">
+              <div class="tab-content active" id="chat-dm">
+                <h2>Direct Messages</h2>
+                <p>Content for direct messages tab goes here.</p>
+              </div>
+              <div class="tab-content" id="chat-server">
+                <h2>Friends</h2>
+                <p>Content for friends tab goes here.</p>
+              </div>
+              <div class="tab-content" id="user-friends">
+                <h2>My Friends</h2>
+                <ul id="friends-list">
+                    {% for friend in friends %}
+                    <li id="friend-{{ friend.id }}">
+                    <div class="friend-info">
+                        <div class="friend-image">
+                        <!-- Add your friend's profile image here -->
+                        <img src="https://via.placeholder.com/40"></img>
+                        </div>
+                        <div class="friend-details">
+                        <h3 class="friend-username">{{ friend.username }}</h3>
+                        <div class="friend-actions">
+                            <button class="remove-friend-btn" data-friend-id="{{ friend.id }}">Remove</button>
+                            <button class="chat-btn" data-friend-id="{{ friend.id }}">Chat</button>
+                            <button class="block-friend-btn" data-friend-id="{{ friend.id }}">Block</button>
+                        </div>
+                        </div>
+                    </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+              </div>
+              <div class="tab-content" id="settings">
+                <h2>Settings</h2>
+                <p>Content for settings tab goes here.</p>
+              </div>
+            </div>
+          </div>
+          
         <div class = "profile-btn-container">
             <button class="profile-btn">
             <div class="profile-img-container">

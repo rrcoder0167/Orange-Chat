@@ -496,9 +496,10 @@ nav {
     padding: 0 20px;
     border: none;
     border-radius: 13px;
+    width: 225px;
     background-color: #FBFBFB;
     box-shadow: 16px 18px 76px rgba(0, 0, 0, 0.25);
-    transition: width 0.2s;
+    transition: width 0.2s ease-in-out;
     position: relative;
   }
   
@@ -682,4 +683,166 @@ nav {
     z-index: 999;
   }
   
+  .tab-bar {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border-radius: 20px;
+    background-color: #ffa500;
+    overflow: hidden;
+    width: 450px;
+    height: 70px;
+    position: fixed;
+    bottom: -5px;
+    left: 13px;
+  }
+  
+  
+  .tab {
+    position: relative;
+    flex-grow: 1;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+    z-index: 1;
+  }
+  
+  .tab i {
+    font-size: 24px;
+    color: #fff;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tab-content {
+    position: absolute;
+    padding: 5px;
+    background-color: #eeeeee;
+    border: 2px solid #666666;
+    display: none;
+    width: 445px;
+    left: 15px;
+    border-radius: 15px;
+    height: calc(100% - 120px);
+    font-family: 'Inter';
+  }
+  
+  
+  .tab-content.active {
+    display: block;
+  }
+  
+  .tab i:hover {
+    font-size: 26.5px;
+    
+  }
+  
+  .tab.active i {
+    color: #fff;
+  }
+  
+  .slide {
+    position: absolute;
+    width: 3.1rem;
+    height: 3.1rem;
+    background-color: #fff;
+    border-radius: 50%;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+    opacity: 0.3;
+    z-index: 0;
+  }
+  
+  .slide.jello {
+    animation: jello-horizontal 0.7s both;
+  }
+  
+  
+  @keyframes jello-horizontal {
+    0% {
+      transform: scale3d(1, 1, 1);
+    }
+    30% {
+      transform: scale3d(1.2, 0.8, 1);
+    }
+    40% {
+      transform: scale3d(0.8, 1.2, 1);
+    }
+    50% {
+      transform: scale3d(1.1, 0.9, 1);
+    }
+    65% {
+      transform: scale3d(0.9, 1.1, 1);
+    }
+    75% {
+      transform: scale3d(1.05, 0.95, 1);
+    }
+    100% {
+      transform: scale3d(1, 1, 1);
+    }
+  }
+  
+  #user-friends {
+    width: 450px;
+    margin: 0 auto;
+  }
+  .tab-content ul {
+    padding: 2px;
+    list-style-type: none;
+  }
+  .friend-info {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: #FFFFFF;
+    margin-bottom: 10px;
+  }
+  
+  .friend-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #3F9B0B;
+    margin-right: 10px;
+    overflow: hidden;
+  }
+  .friend-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  
+  .friend-details {
+    display: flex;
+    flex: 1;
+    align-items: center;
+  }
+  
+  .friend-username {
+    font-size: 17px;
+    margin-bottom: 17px;
+  }
+  
+  .friend-actions button {
+    margin-left: 10px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3F9B0B;
+    color: #FFFFFF;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  
+  .friend-actions button:hover {
+    background-color: #2D7C08;
+  }
   
