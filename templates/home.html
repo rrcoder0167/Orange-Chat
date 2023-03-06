@@ -37,8 +37,23 @@
                 <h2>Direct Messages</h2>
                 <p>Content for direct messages tab goes here.</p>
               </div>
-              <div class="tab-content" id="user-friends">
+              <div class="tab-content" id="chat-server">
+                <h2>Server Chat</h2>
+                <p>Content for server chat tab goes here.</p>
+            </div>
+              <div class="tab-content" id="user-friends">   
                 <h2>My Friends</h2>
+                <button id="add-friends-button" class="add-friends-button">Add Friends</button>
+        <div id="popup-window" class="popup-window">
+            <div class="popup-header">
+                Add friend
+            </div>
+            <button id="close-button">X</button>
+            <div class="popup-body">
+                <input type="text" id="friend-email" placeholder="Enter friend's email address">
+                <div id="search-result" class="success"></div>
+            </div>
+        </div>
                 <ul id="friends-list">
                   {% for friend in friends %}
                   <li id="friend-{{ friend.id }}">

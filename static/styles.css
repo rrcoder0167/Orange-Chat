@@ -816,6 +816,8 @@ nav {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    cursor:pointer;
+    margin-left: 5px;
     background-color: #3F9B0B;
     margin-right: 10px;
     overflow: hidden;
@@ -834,27 +836,27 @@ nav {
   }
   
   .friend-username {
-    font-size: 17px;
-    margin-right: 200px;
-    margin-bottom: 17px;
+    font-size: 20px;
+    margin-right: 175px;
+    margin-bottom: 15px;
   }
   
   .friend-actions button {
     margin-left: 0px;
     padding: 5px;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border: none;
     border-radius: 50%;
     background-color: #FFFFFF;
-    color: #000000;
-    font-size: 15px;
+    color: #2a2a2a;
+    font-size: 19px;
     transition: background-color 0.3s ease-in-out;
     cursor: pointer;
   }
   
   .friend-actions button:hover {
-    background-color: #f2f2f2;
+    background-color: #ebebeb;
   }
   
   .dropdown {
@@ -869,7 +871,7 @@ nav {
     width: 175px;
     border: 1px solid #ccc;
     background-color: #fff;
-    padding: 1px;
+    padding: 4px;
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     border-radius: 8px;
@@ -877,16 +879,23 @@ nav {
     display: none;
   }
   
+  .dropdown-submenu.show {
+    display: block;
+  }
+  
+
   .dropdown-item {
     font-size: 15px;
     padding: 5px 10px;
     color: #000000;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
     cursor: pointer;
   }
   
   .dropdown-item:hover {
     background-color: #f2f2f2;
-    font-weight: 600;
-    color: #000000;
+    font-weight: 500;
+    color: red;
   }
   
