@@ -6,6 +6,7 @@ from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import secrets
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 secret_key = secrets.token_hex(16)
@@ -16,6 +17,7 @@ app.config["MONGO_URI"] = "mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-cha
 mongo = PyMongo(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+socketio = SocketIO(app)
 
 # Docker Container Commands
 # Docker Build: docker build -t orange-chat .
@@ -477,9 +479,28 @@ def unblock_friend():
         flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
 
+@app.route('/chat')
+def chat():
+    # Retrieve most recent 20 messages
+    message_list = mongo.db.messages.find().sort('timestamp', -1).limit(20)
+    return render_template('chat.html', messages=message_list)
 
+@socketio.on('message')
+def handle_message(message):
+    timestamp = datetime.datetime.utcnow()
+    person = 'user' # replace with the name of the person who sent the message
+    mongo.db.messages.insert_one({
+        'message': message,
+        'timestamp': timestamp,
+        'person': person
+    })
+    emit('message', {'message': message, 'timestamp': timestamp, 'person': person}, broadcast=True)
 
+@socketio.on('load_messages')
+def load_messages():
+    message_list = mongo.db.messages.find().sort('timestamp', -1).limit(20)
+    emit('messages', [message for message in message_list])
 
 
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc", debug=True)
+    socketio.run(app)
