@@ -1,57 +1,31 @@
-<html>
-    <head>
-        <title>test features here</title>
-        <link href='https://fonts.googleapis.com/css?family=Fira Code' rel='stylesheet'>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='404_styles.css') }}">
-        
-    </head>
-        <div class="container">
-            <div class="row">
-                <div class="xs-12 md-6 mx-auto">
-                    <script>
-                            var formatThousandsNoRounding = function(n, dp){
-                            var e = '', s = e+n, l = s.length, b = n < 0 ? 1 : 0,
-                                i = s.lastIndexOf(','), j = i == -1 ? l : i,
-                                r = e, d = s.substring(j+1, dp);
-                            while ( (j-=3) > b ) { r = '.' + s.substring(j, 3) + r; }
-                            return s.substring(0, j + 3) + r + 
-                            (dp ? ',' + d + ( d.length < dp ? 
-                                ('00000').substring(0, dp - d.length):e):e);
-                        };
-                        
-                        var hasRun = false;
-                        
-                        inView('#countUp').on('enter', function() {
-                            if (hasRun == false) {
-                                $('.number').each(function() {
-                                    var $this = $(this),
-                                        countTo = $this.attr('data-count');
-                        
-                                    $({ countNum: $this.text()}).animate({
-                                        countNum: countTo
-                                    },
-                                    {
-                                        duration: 2000,
-                                        easing:'linear',
-                                        step: function() {
-                                            $this.text(formatThousandsNoRounding(Math.floor(this.countNum)));
-                                        },
-                                        complete: function() {
-                                            $this.text(formatThousandsNoRounding(this.countNum));
-                                        }
-                                    });
-                                });
-                                hasRun = true;
-                            }
-                        });
-                    </script>
-                    <div id="countUp">
-                        <div class="number" data-count="404">404</div>
-                        <div class="text">Page not found</div>
-                        <div class="text">This may not mean anything.</div>
-                        <div class="text">I'm probably working on something that has blown up.</div>
-                    </div>
-                </div>
-            </div>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='404_styles.css') }}">
+    <script src="{{url_for('static', filename='404page.js')}}"></script>
+</head>
+  <body>
+    <div class="container">
+      <div class="left-section">
+        <h1 class="typing">404</h1>
+        <span class="typing-cursor">|</span>
+      </div>
+      <div class="right-section">
+        <h2 class="oops">Oops, looks like our oranges lost their way.</h2>
+        <div class="chat-animation">
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+  <div class="error-message">
+    Trying to find that orange
+  </div>
+</div>
+
+        <div class="return-to-home">
+          <a href="#">Return to Home</a>
         </div>
+      </div>
+    </div>
+    <script src="./app.js"></script>
+  </body>
 </html>

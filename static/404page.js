@@ -1,35 +1,27 @@
-var formatThousandsNoRounding = function(n, dp){
-    var e = '', s = e+n, l = s.length, b = n < 0 ? 1 : 0,
-        i = s.lastIndexOf(','), j = i == -1 ? l : i,
-        r = e, d = s.substring(j+1, dp);
-    while ( (j-=3) > b ) { r = '.' + s.substring(j, 3) + r; }
-    return s.substring(0, j + 3) + r + 
-      (dp ? ',' + d + ( d.length < dp ? 
-          ('00000').substring(0, dp - d.length):e):e);
-  };
-  
-  var hasRun = false;
-  
-  inView('#countUp').on('enter', function() {
-      if (hasRun == false) {
-          $('.number').each(function() {
-              var $this = $(this),
-                  countTo = $this.attr('data-count');
-  
-              $({ countNum: $this.text()}).animate({
-                  countNum: countTo
-              },
-              {
-                  duration: 2000,
-                  easing:'linear',
-                  step: function() {
-                      $this.text(formatThousandsNoRounding(Math.floor(this.countNum)));
-                  },
-                  complete: function() {
-                      $this.text(formatThousandsNoRounding(this.countNum));
-                  }
-              });
-          });
-          hasRun = true;
-      }
+const oopsText = document.querySelector(".oops");
+const oopsTextContent = oopsText.textContent;
+oopsText.textContent = "";
+
+let i = 0;
+const typeEffect = setInterval(() => {
+  oopsText.textContent += oopsTextContent.charAt(i);
+  i++;
+  if (i > oopsTextContent.length - 1) {
+    clearInterval(typeEffect);
+  }
+}, 30);
+
+const dots = document.querySelectorAll('.dot');
+const error_msg = document.querySelector('.error-message');
+
+setTimeout(() => {
+  dots.forEach(dot => {
+    dot.style.animation = 'none';
+    dot.style.backgroundColor = '#f03a49';
+    dot.style.transform = 'translateY(-20px)';
+    dot.style.animation = 'orangeDisappear 1s linear forwards';
   });
+  error_msg.innerHTML = "Sorry, we can't find this page.";
+  error_msg.style.color = '#f03a49';
+}, 5000);
+
