@@ -19,6 +19,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 socketio = SocketIO(app)
 
+
 # Docker Container Commands
 # Docker Build: docker build -t orange-chat .
 # Docker Run: docker run -p 5000:5000 orange-chat
@@ -68,7 +69,7 @@ class User(UserMixin):
 
     def is_authenticated(self):
         return self._is_authenticated
-    
+
     def authenticate(self):
         self._is_authenticated = True
 
@@ -467,6 +468,7 @@ def block_friend():
         flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
 
+
 @app.route("/unblock_friend", methods=["POST"])
 @login_required
 def unblock_friend():
@@ -479,27 +481,29 @@ def unblock_friend():
         flash("Sorry, there was an error, please try again later.", category="error_high")
         return jsonify({"message": "bad_request-error"}), 400
 
-@app.route('/chat')
-def chat():
-    # Retrieve most recent 20 messages
-    message_list = mongo.db.messages.find().sort('timestamp', -1).limit(20)
-    return render_template('chat.html', messages=message_list)
 
-@socketio.on('message')
-def handle_message(message):
-    timestamp = datetime.datetime.utcnow()
-    person = 'user' # replace with the name of the person who sent the message
+# handle send_message event
+@socketio.on('send_message')
+def send_message(data):
+    # Get the data from the client-side
+    message = data['message']
+    recipient = data['recipient']
+
+    # Save the message to the database
     mongo.db.messages.insert_one({
         'message': message,
-        'timestamp': timestamp,
-        'person': person
+        'sender': current_user.username,
+        'recipient': recipient,
+        'timestamp': datetime.datetime.now()
     })
-    emit('message', {'message': message, 'timestamp': timestamp, 'person': person}, broadcast=True)
 
-@socketio.on('load_messages')
-def load_messages():
-    message_list = mongo.db.messages.find().sort('timestamp', -1).limit(20)
-    emit('messages', [message for message in message_list])
+    # Emit the message to the recipient
+    socketio.emit('receive_message', {
+        'message': message,
+        'sender': current_user.username,
+        'recipient': recipient,
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }, room=recipient)
 
 
 if __name__ == "__main__":

@@ -13,6 +13,7 @@
         <script src="{{url_for('static', filename='navbar.js')}}"></script>
         <script src="{{url_for('static', filename='orange_ui.js')}}"></script>
         <script src="{{url_for('static', filename='profile_btn.js')}}"></script>
+        <script src="{{url_for('static', filename='chat.js')}}"></script>
         
     </head>
     <body>
@@ -36,6 +37,30 @@
               <div class="tab-content active" id="chat-dm">
                 <h2>Direct Messages</h2>
                 <p>Content for direct messages tab goes here.</p>
+                <ul id="friends-list">
+                  {% for friend in friends %}
+                  <li id="friend-{{ friend.id }}">
+                    <div class="friend-info">
+                      <div class="friend-image">
+                        <!-- Add your friend's profile image here -->
+                        <img src="https://via.placeholder.com/40"></img>
+                      </div>
+                      <div class="friend-details">
+                        <h3 class="friend-username">{{ friend.username }}</h3>
+                        <div class="friend-actions">
+                          <button class="chat-btn" data-friend-id="{{ friend.id }}"><i class="fas fa-comment-dots"></i></button>
+                          <div class="dropdown">
+                            <button class="dropbtn"><i class="fas fa-ellipsis-v"></i></button>
+                            <div class="dropdown-submenu">
+                              <div class="dropdown-item remove-btn" data-friend-id="{{ friend.id }}">Delete Conversation</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
               </div>
               <div class="tab-content" id="chat-server">
                 <h2>Server Chat</h2>
@@ -54,31 +79,30 @@
                 <div id="search-result" class="success"></div>
             </div>
         </div>
-                <ul id="friends-list">
-                  {% for friend in friends %}
-                  <li id="friend-{{ friend.id }}">
-                    <div class="friend-info">
-                      <div class="friend-image">
-                        <!-- Add your friend's profile image here -->
-                        <img src="https://via.placeholder.com/40"></img>
-                      </div>
-                      <div class="friend-details">
-                        <h3 class="friend-username">{{ friend.username }}</h3>
-                        <div class="friend-actions">
-                          <button class="chat-btn" data-friend-id="{{ friend.id }}"><i class="fas fa-comment-dots"></i></button>
-                          <div class="dropdown">
-                            <button class="dropbtn"><i class="fas fa-ellipsis-v"></i></button>
-                            <div class="dropdown-submenu">
-                              <div class="dropdown-item remove-friend-btn" data-friend-id="{{ friend.id }}">Remove</div>
-                              <div class="dropdown-item block-friend-btn" data-friend-id="{{ friend.id }}">Block</div>
-                            </div>
-                          </div>
+            <ul id="friends-list">
+              {% for friend in friends %}
+              <li id="friend-{{ friend.id }}">
+                <div class="friend-info">
+                  <div class="friend-image">
+                    <!-- Add your friend's profile image here -->
+                    <img src="https://via.placeholder.com/40"></img>
+                  </div>
+                  <div class="friend-details">
+                    <h3 class="friend-username">{{ friend.username }}</h3>
+                    <div class="friend-actions">
+                      <button class="chat-btn" data-friend-id="{{ friend.id }}"><i class="fas fa-comment-dots"></i></button>
+                      <div class="dropdown">
+                        <button class="dropbtn"><i class="fas fa-ellipsis-v"></i></button>
+                        <div class="dropdown-submenu">
+                          <div class="dropdown-item remove-btn" data-friend-id="{{ friend.id }}">Delete Conversation</div>
                         </div>
                       </div>
                     </div>
-                  </li>
-                  {% endfor %}
-                </ul>
+                  </div>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
               </div>
               <div class="tab-content" id="settings">
                 <h2>Settings</h2>
