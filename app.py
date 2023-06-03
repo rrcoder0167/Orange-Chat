@@ -12,8 +12,9 @@ app = Flask(__name__)
 secret_key = secrets.token_hex(16)
 # "36024aafe2dbe4b763921f96244aa393"    
 app.config['SECRET_KEY'] = "36024aafe2dbe4b763921f96244aa393"
+
 # "mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
-app.config["MONGO_URI"] = "mongodb+srv://rrcoder0167:1F4iy9NBl7LJjcUs@orange-chat.xb2revk.mongodb.net/chat_db"
+app.config["MONGO_URI"] = "mongodb+srv://rrcoder0167:m5VTIWglZ9VDs7WR@orange-chat.qzv2jp5.mongodb.net/chat_db"
 mongo = PyMongo(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
